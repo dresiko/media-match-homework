@@ -1,26 +1,67 @@
 const express = require('express');
 const router = express.Router();
+const newsApiService = require('../services/newsapi.service');
+const embeddingsService = require('../services/embeddings.service');
+const s3VectorService = require('../services/s3vector.service');
 
-// GET /api/articles - Fetch articles
+// GET /api/articles - List articles from S3
 router.get('/', async (req, res) => {
   try {
-    // TODO: Implement article fetching from S3
+    const articleIds = await s3VectorService.listArticles();
     res.json({
-      articles: [],
-      message: 'Articles endpoint - Coming soon'
+      count: articleIds.length,
+      articleIds: articleIds
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+// GET /api/articles/stats - Get index statistics
+router.get('/stats', async (req, res) => {
+  try {
+    const stats = await s3VectorService.getIndexStats();
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/articles/:id - Get specific article
+router.get('/:id', async (req, res) => {
+  try {
+    const article = await s3VectorService.getArticle(req.params.id);
+    res.json(article);
+  } catch (error) {
+    res.status(404).json({ error: 'Article not found' });
+  }
+});
+
 // POST /api/articles/ingest - Ingest new articles
 router.post('/ingest', async (req, res) => {
   try {
-    // TODO: Implement article ingestion
+    const { pageSize = 50, query } = req.body;
+    
+    // Fetch articles
+    const articles = await newsApiService.fetchArticles({ pageSize, query });
+    
+    if (articles.length === 0) {
+      return res.json({
+        message: 'No articles found',
+        count: 0
+      });
+    }
+
+    // Generate embeddings
+    const embeddings = await embeddingsService.generateArticleEmbeddingsBatch(articles, 10);
+    
+    // Store in S3
+    const results = await s3VectorService.storeArticlesBatch(articles, embeddings);
+    
     res.json({
-      message: 'Article ingestion - Coming soon',
-      count: 0
+      message: 'Articles ingested successfully',
+      count: results.length,
+      articles: results
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

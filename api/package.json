@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "seed": "node src/scripts/seed.js"
+    "seed": "node src/scripts/seed.js",
+    "seed:debug": "node --inspect-brk src/scripts/seed.js",
+    "debug": "node --inspect src/index.js"
   },
   "keywords": ["media", "matching", "pr", "reporters"],
   "author": "",
@@ -18,11 +20,12 @@
     "@aws-sdk/client-s3": "^3.450.0",
     "@aws-sdk/lib-storage": "^3.450.0",
     "axios": "^1.6.0",
-    "@xenova/transformers": "^2.10.0",
+    "openai": "^4.20.1",
     "body-parser": "^1.20.2",
     "csv-writer": "^1.6.0",
     "helmet": "^7.1.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

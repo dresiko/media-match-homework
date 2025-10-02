@@ -136,7 +136,20 @@ make shell-api     # Open shell in API container
 | `AWS_ACCESS_KEY_ID` | AWS access key | Yes |
 | `AWS_SECRET_ACCESS_KEY` | AWS secret key | Yes |
 | `S3_VECTOR_BUCKET` | S3 bucket name for vectors | Yes |
+| `S3_VECTOR_ARTICLES_INDEX` | S3 vector index name | Yes |
+| `OPENAI_API_KEY` | OpenAI API key for embeddings | Yes |
 | `NEWS_API_KEY` | NewsAPI key for ingestion | No |
+
+### API Endpoints
+
+**Articles**
+- `GET /api/articles` - List all articles
+- `GET /api/articles/stats` - Get index statistics
+- `GET /api/articles/:id` - Get specific article
+- `POST /api/articles/ingest` - Ingest new articles from NewsAPI
+
+**Health**
+- `GET /health` - API health check
 
 ## 📄 License
 
