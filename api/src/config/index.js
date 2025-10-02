@@ -20,7 +20,7 @@ module.exports = {
   // OpenAI Configuration
   openai: {
     embeddingModel: 'text-embedding-3-small',
-    embeddingDimensions: 1536
+    embeddingDimensions: 768
   },
   
   // Article Ingestion Configuration
