@@ -46,8 +46,14 @@ class S3VectorService {
 
       const articleData = {
         id: articleId,
-        ...article,
-        embedding: embedding,
+        sourceId: article.source.id,
+        sourceName: article.source.name,
+        title: article.title,
+        description: article.description,
+        content: article.content,
+        publishedAt: article.publishedAt,
+        url: article.url,
+        urlToImage: article.urlToImage,
         storedAt: new Date().toISOString(),
       };
 
@@ -65,10 +71,11 @@ class S3VectorService {
         ],
       });
 
-      await this.clientVector.send(command);
+      const result = await this.clientVector.send(command);
       console.log(`Stored article: ${articleId} - ${article.title}`);
 
       return {
+        ...result,
         id: articleId,
         key: key,
         title: article.title,
