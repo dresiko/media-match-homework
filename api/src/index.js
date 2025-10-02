@@ -19,7 +19,7 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'healthy', 
     timestamp: new Date().toISOString(),
-    service: 'honeyjar-media-matching-api'
+    service: 'media-matching-api'
   });
 });
 
@@ -51,7 +51,7 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Honeyjar Media Matching API running on port ${PORT}`);
+  console.log(`🚀 Media Matching API running on port ${PORT}`);
   console.log(`📍 Health check: http://localhost:${PORT}/health`);
   console.log(`🔧 Environment: ${process.env.NODE_ENV}`);
 });

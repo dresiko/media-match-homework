@@ -5,7 +5,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    container_name: honeyjar-api
+    container_name: media-matching-api
     ports:
       - "3001:3001"
     environment:
@@ -14,7 +14,7 @@ services:
       - AWS_REGION=${AWS_REGION:-us-east-1}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - S3_VECTOR_BUCKET=${S3_VECTOR_BUCKET:-honeyjar-media-vectors}
+      - S3_VECTOR_BUCKET=${S3_VECTOR_BUCKET:-media-matching-vectors}
       - NEWS_API_KEY=${NEWS_API_KEY}
     volumes:
       - ./api:/app
@@ -22,13 +22,13 @@ services:
     command: npm run dev
     restart: unless-stopped
     networks:
-      - honeyjar-network
+      - media-matching-network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: honeyjar-frontend
+    container_name: media-matching-frontend
     ports:
       - "3000:3000"
     environment:
@@ -39,11 +39,11 @@ services:
     command: npm start
     restart: unless-stopped
     networks:
-      - honeyjar-network
+      - media-matching-network
     depends_on:
       - api
 
 networks:
-  honeyjar-network:
+  media-matching-network:
     driver: bridge
 

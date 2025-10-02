@@ -1,7 +1,7 @@
 {
-  "name": "honeyjar-media-matching-frontend",
+  "name": "media-matching-frontend",
   "version": "1.0.0",
-  "description": "Media Matching MVP Frontend for Honeyjar",
+  "description": "Media Matching MVP Frontend",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",

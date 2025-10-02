@@ -1,4 +1,4 @@
-# Honeyjar Media Matching MVP
+# Media Matching MVP
 
 A media matching system that helps PR professionals and founders quickly research and connect with the best-fit reporters for their stories using AI-powered semantic search with Amazon S3 Vectors.
 

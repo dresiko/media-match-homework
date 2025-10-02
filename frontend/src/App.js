@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>🍯 Honeyjar Media Matching</h1>
+        <h1>Media Matching</h1>
         <p>Find the perfect reporters for your story</p>
       </header>
       <main className="App-main">

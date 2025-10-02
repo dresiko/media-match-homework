@@ -1,7 +1,7 @@
 {
-  "name": "honeyjar-media-matching-api",
+  "name": "media-matching-api",
   "version": "1.0.0",
-  "description": "Media Matching MVP API for Honeyjar",
+  "description": "Media Matching MVP API",
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
