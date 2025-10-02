@@ -26,7 +26,7 @@ module.exports = {
   // Article Ingestion Configuration
   ingestion: {
     defaultPageSize: 100,
-    defaultDaysBack: 90, // Fetch articles from last 90 days
+    defaultDaysBack: 30, // Fetch articles from last 30 days
     sources: [
       'techcrunch',
       'the-wall-street-journal',

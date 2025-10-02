@@ -50,12 +50,12 @@ class NewsAPIService {
         params.domains = domains;
       }
 
-      if (query) {
-        params.q = query;
-      }
+      // if (query) {
+      //   params.q = query;
+      // }
 
       console.log('Fetching articles from NewsAPI...');
-      const response = await axios.get(`${this.baseUrl}/everything`, { params });
+      const response = await axios.get(`${this.baseUrl}/top-headlines`, { params });
 
       if (response.data.status === 'ok') {
         console.log(`Fetched ${response.data.articles.length} articles`);
