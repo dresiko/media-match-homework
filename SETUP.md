@@ -68,7 +68,23 @@ docker-compose down
 curl http://localhost:3001/health
 ```
 
-### 2. Seed Articles
+### 2. Initialize Storage (First Time Only)
+
+Create the S3 bucket and vector index:
+
+```bash
+# Using Make
+make init
+
+# Or directly
+cd api
+npm run init
+
+# Or via API
+curl -X POST http://localhost:3001/api/articles/init
+```
+
+### 3. Seed Articles
 
 ```bash
 # Using Make
@@ -80,7 +96,7 @@ curl -X POST http://localhost:3001/api/articles/ingest \
   -d '{"pageSize": 50}'
 ```
 
-### 3. Check Statistics
+### 4. Check Statistics
 
 ```bash
 curl http://localhost:3001/api/articles/stats
@@ -95,13 +111,13 @@ Expected response:
 }
 ```
 
-### 4. List Articles
+### 5. List Articles
 
 ```bash
 curl http://localhost:3001/api/articles
 ```
 
-### 5. Get Specific Article
+### 6. Get Specific Article
 
 ```bash
 curl http://localhost:3001/api/articles/{article-id}

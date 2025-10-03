@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
+    "init": "node src/scripts/init-storage.js",
     "seed": "node src/scripts/seed.js",
     "seed:debug": "node --inspect-brk src/scripts/seed.js",
     "debug": "node --inspect src/index.js"

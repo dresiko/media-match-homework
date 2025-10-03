@@ -1,4 +1,4 @@
-.PHONY: help dev build up down clean seed logs
+.PHONY: help dev build up down clean init seed logs
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -21,6 +21,9 @@ down: ## Stop and remove containers
 clean: ## Stop containers and remove volumes
 	docker-compose down -v
 	rm -rf api/node_modules frontend/node_modules
+
+init: ## Initialize S3 Vector storage (bucket and index)
+	docker-compose exec api npm run init
 
 seed: ## Seed the database with sample articles
 	docker-compose exec api npm run seed

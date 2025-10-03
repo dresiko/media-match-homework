@@ -143,6 +143,7 @@ make shell-api     # Open shell in API container
 ### API Endpoints
 
 **Articles**
+- `POST /api/articles/init` - Initialize S3 Vector storage (bucket and index)
 - `GET /api/articles` - List all articles
 - `GET /api/articles/stats` - Get index statistics
 - `GET /api/articles/:id` - Get specific article

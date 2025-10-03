@@ -7,8 +7,11 @@ async function seed() {
   console.log('🌱 Starting article ingestion and vectorization...\n');
 
   try {
+    // Step 0: Initialize S3 Vector storage (create bucket and index if needed)
+    await s3VectorService.initialize();
+
     // Step 1: Fetch articles from NewsAPI
-    console.log('📰 Step 1: Fetching articles from NewsAPI...');
+    console.log('\n📰 Step 1: Fetching articles from NewsAPI...');
     const articles = await newsApiService.fetchArticles({
       pageSize: 50 // Adjust based on your needs
     });

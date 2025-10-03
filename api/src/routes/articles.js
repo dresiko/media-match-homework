@@ -4,6 +4,19 @@ const newsApiService = require('../services/newsapi.service');
 const embeddingsService = require('../services/embeddings.service');
 const s3VectorService = require('../services/s3vector.service');
 
+// POST /api/articles/init - Initialize S3 Vector storage
+router.post('/init', async (req, res) => {
+  try {
+    const result = await s3VectorService.initialize();
+    res.json({
+      message: 'Storage initialized successfully',
+      ...result
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET /api/articles - List articles from S3
 router.get('/', async (req, res) => {
   try {
