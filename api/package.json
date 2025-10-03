@@ -7,8 +7,7 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "init": "node src/scripts/init-storage.js",
-    "seed": "node src/scripts/seed.js",
-    "seed:debug": "node --inspect-brk=0.0.0.0:9229 src/scripts/seed.js",
+    "seed": "nodemon src/scripts/seed.js",
     "debug": "node --inspect src/index.js"
   },
   "keywords": [

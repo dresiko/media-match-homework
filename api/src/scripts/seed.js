@@ -55,13 +55,14 @@ async function seed() {
     console.log(`   Total articles in index: ${stats.totalArticles}`);
 
     console.log('\n✅ Seeding completed successfully!');
+    process.exit(0);
   } catch (error) {
     console.error('\n❌ Error during seeding:', error.message);
     console.error(error.stack);
     process.exit(1);
   }
 }
-
+console.log('🌱 Starting article ingestion and vectorization...\n');
 // Run the seed function
 seed();
 
