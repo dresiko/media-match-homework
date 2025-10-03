@@ -55,14 +55,20 @@ class S3VectorService {
         console.log(`✓ Vector bucket '${this.bucket}' already exists`);
         return false;
       } catch (error) {
-        if (error.name === 'NotFound' || error.$metadata?.httpStatusCode === 404) {
+        if (
+          error.name === "NotFound" ||
+          error.$metadata?.httpStatusCode === 404
+        ) {
           // Bucket doesn't exist, create it
           console.log(`Creating vector bucket '${this.bucket}'...`);
-          
+
           const createCommand = new CreateBucketCommand({
             Bucket: this.bucket,
             CreateBucketConfiguration: {
-              LocationConstraint: config.aws.region !== 'us-east-1' ? config.aws.region : undefined,
+              LocationConstraint:
+                config.aws.region !== "us-east-1"
+                  ? config.aws.region
+                  : undefined,
             },
           });
 
@@ -98,17 +104,20 @@ class S3VectorService {
         console.log(`  - Vector dimensions: ${response.vectorDimensions}`);
         return false;
       } catch (error) {
-        if (error.name === 'ResourceNotFoundException' || error.$metadata?.httpStatusCode === 404) {
+        if (
+          error.name === "ResourceNotFoundException" ||
+          error.$metadata?.httpStatusCode === 404
+        ) {
           // Index doesn't exist, create it
           console.log(`Creating vector index '${this.index}'...`);
-          
+
           const createCommand = new CreateIndexCommand({
             vectorBucketName: this.bucket,
             indexName: this.index,
-            dataType: 'float32',
+            dataType: "float32",
             dimension: config.openai.embeddingDimensions, // 768 for text-embedding-3-small
-            distanceMetric: 'cosine',
-            indexType: 'HNSW', // Hierarchical Navigable Small World - best for semantic search
+            distanceMetric: "cosine",
+            indexType: "HNSW", // Hierarchical Navigable Small World - best for semantic search
           });
 
           await this.clientVector.send(createCommand);
@@ -125,7 +134,7 @@ class S3VectorService {
       throw error;
     }
   }
-  
+
   async deleteVectorIndex() {
     try {
       const deleteCommand = new DeleteIndexCommand({
@@ -162,13 +171,13 @@ class S3VectorService {
    */
   async initialize() {
     try {
-      console.log('🔧 Initializing S3 Vector storage...\n');
-      
+      console.log("🔧 Initializing S3 Vector storage...\n");
+
       const bucketCreated = await this.createVectorBucketIfNotExists();
       const indexCreated = await this.createVectorIndexIfNotExists();
 
-      console.log('\n✅ S3 Vector storage initialized');
-      
+      console.log("\n✅ S3 Vector storage initialized");
+
       return {
         bucketCreated,
         indexCreated,
@@ -176,7 +185,10 @@ class S3VectorService {
         index: this.index,
       };
     } catch (error) {
-      console.error('❌ Failed to initialize S3 Vector storage:', error.message);
+      console.error(
+        "❌ Failed to initialize S3 Vector storage:",
+        error.message
+      );
       throw error;
     }
   }
@@ -196,6 +208,7 @@ class S3VectorService {
         id: articleId,
         sourceId: article.source.id,
         sourceName: article.source.name,
+        author: article.author,
         title: article.title,
         description: article.description,
         content: article.content,
@@ -294,14 +307,14 @@ class S3VectorService {
       const command = new ListVectorsCommand({
         vectorBucketName: this.bucket,
         indexName: this.index,
-        returnMetadata: true
+        returnMetadata: true,
       });
 
       const response = await this.clientVector.send(command);
       if (!response.vectors || response.vectors.length === 0) {
         return [];
       }
-      return response.vectors
+      return response.vectors;
     } catch (error) {
       console.error("Error listing articles from S3:", error.message);
       throw error;
@@ -310,58 +323,26 @@ class S3VectorService {
 
   /**
    * Search for similar articles using vector similarity
-   * This is a simple implementation that loads all vectors and computes similarity
-   * In production, you would use AWS S3 Vector's native search capabilities
+   * No hard filters - pure semantic similarity lets the best matches rise to the top
    *
    * @param {Array<number>} queryEmbedding - Query vector
    * @param {number} limit - Number of results to return
-   * @param {Object} filters - Optional filters (source, author, etc.)
    * @returns {Promise<Array<Object>>} Array of similar articles with scores
    */
-  async searchSimilarArticles(queryEmbedding, limit = 10, filters = {}) {
+  async searchSimilar(queryEmbedding, limit = 10) {
     try {
       console.log("Searching for similar articles...");
-
-      // Get all article IDs
-      const articleIds = await this.listArticles();
-
-      if (articleIds.length === 0) {
-        console.warn("No articles found in index");
-        return [];
-      }
-
-      console.log(`Found ${articleIds.length} articles to search`);
-
-      // Load all articles and compute similarity
-      const articlesWithScores = [];
-
-      for (const id of articleIds) {
-        try {
-          const article = await this.getArticle(id);
-
-          // Apply filters
-          if (filters.source && article.source !== filters.source) continue;
-          if (filters.author && article.author !== filters.author) continue;
-
-          // Compute cosine similarity
-          const similarity = this.cosineSimilarity(
-            queryEmbedding,
-            article.embedding
-          );
-
-          articlesWithScores.push({
-            ...article,
-            similarityScore: similarity,
-          });
-        } catch (error) {
-          console.error(`Error loading article ${id}:`, error.message);
-        }
-      }
-
-      // Sort by similarity and return top results
-      articlesWithScores.sort((a, b) => b.similarityScore - a.similarityScore);
-
-      return articlesWithScores.slice(0, limit);
+      const embeddingFloat32 = Float32Array.from(queryEmbedding);
+      console.log("Limit:", limit);
+      const command = new QueryVectorsCommand({
+        vectorBucketName: this.bucket,
+        indexName: this.index,
+        queryVector: { float32: Array.from(embeddingFloat32) },
+        topK: limit,
+        returnMetadata: true,
+      });
+      const response = await this.clientVector.send(command);
+      return response.vectors;
     } catch (error) {
       console.error("Error searching articles:", error.message);
       throw error;

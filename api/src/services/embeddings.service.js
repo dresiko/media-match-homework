@@ -62,29 +62,33 @@ class EmbeddingsService {
   prepareArticleText(article) {
     const parts = [];
     
+    if (article.author) {
+      parts.push("Author: " + article.author);
+    }
+
     // Title is most important (repeat for emphasis)
     if (article.title) {
-      parts.push(article.title);
+      parts.push("Title: " + article.title);
       parts.push(article.title);
     }
     
     // Description
     if (article.description) {
-      parts.push(article.description);
+      parts.push("Description: " + article.description);
+    }
+
+    if (article.source) {
+      parts.push("SourceId: " + article.source.id);
+      parts.push("SourceName: " + article.source.name);
     }
     
     // Content (truncate if too long)
     if (article.content) {
-      const maxContentLength = 1000;
+      const maxContentLength = 5000;
       const content = article.content.length > maxContentLength
         ? article.content.substring(0, maxContentLength) + '...'
         : article.content;
-      parts.push(content);
-    }
-    
-    // Add source for context
-    if (article.source) {
-      parts.push(`Published in ${article.source}`);
+      parts.push("Content: " + content);
     }
     
     return parts.join(' ');
@@ -102,7 +106,6 @@ class EmbeddingsService {
     for (let i = 0; i < articles.length; i += batchSize) {
       const batch = articles.slice(i, i + batchSize);
       const texts = batch.map(article => this.prepareArticleText(article));
-      
       console.log(`Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(articles.length / batchSize)}...`);
       
       const batchEmbeddings = await this.generateEmbeddings(texts);
