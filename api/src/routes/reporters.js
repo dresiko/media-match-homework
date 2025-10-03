@@ -74,22 +74,19 @@ function extractReportersFromArticles(articles, limit) {
   const reporterMap = new Map();
 
   articles.forEach(article => {
-    const author = article.author || 'Unknown';
-    const source = article.sourceName || article.source?.name || 'Unknown';
+    const articleMetadata = article.metadata;
+    const author = articleMetadata.author || 'Unknown';
+    const source = articleMetadata.sourceName || articleMetadata.source?.name || 'Unknown';
     
     // Skip unknown authors
     if (author === 'Unknown' || !author) return;
-
     // Create unique key for reporter
     const key = `${author}|${source}`;
-
     if (!reporterMap.has(key)) {
       reporterMap.set(key, {
         name: author,
         outlet: source,
         relevantArticles: [],
-        averageSimilarity: 0,
-        totalSimilarity: 0,
         articleCount: 0
       });
     }
@@ -98,38 +95,36 @@ function extractReportersFromArticles(articles, limit) {
     
     // Add article to reporter's portfolio
     reporter.relevantArticles.push({
-      title: article.title,
-      url: article.url,
-      publishedAt: article.publishedAt,
-      similarity: article.similarityScore,
+      title: articleMetadata.title,
+      url: articleMetadata.url,
+      publishedAt: articleMetadata.publishedAt,
+      distance: article.distance,
       description: article.description
     });
 
-    reporter.totalSimilarity += article.similarityScore;
     reporter.articleCount += 1;
-    reporter.averageSimilarity = reporter.totalSimilarity / reporter.articleCount;
   });
 
-  // Convert to array and sort by average similarity
-  const reporters = Array.from(reporterMap.values())
-    .sort((a, b) => b.averageSimilarity - a.averageSimilarity)
-    .slice(0, limit)
-    .map((reporter, index) => ({
-      rank: index + 1,
-      name: reporter.name,
-      outlet: reporter.outlet,
-      matchScore: Math.round(reporter.averageSimilarity * 100),
-      justification: generateJustification(reporter),
-      recentArticles: reporter.relevantArticles
-        .sort((a, b) => b.similarity - a.similarity)
-        .slice(0, 3), // Top 3 most relevant articles
-      totalRelevantArticles: reporter.articleCount,
-      email: null, // TODO: Add contact enrichment
-      linkedin: null,
-      twitter: null
-    }));
+  // // Convert to array and sort by average similarity
+  // const reporters = Array.from(reporterMap.values())
+  //   .sort((a, b) => b.averageSimilarity - a.averageSimilarity)
+  //   .slice(0, limit)
+  //   .map((reporter, index) => ({
+  //     rank: index + 1,
+  //     name: reporter.name,
+  //     outlet: reporter.outlet,
+  //     matchScore: Math.round(reporter.averageSimilarity * 100),
+  //     justification: generateJustification(reporter),
+  //     recentArticles: reporter.relevantArticles
+  //       .sort((a, b) => b.similarity - a.similarity)
+  //       .slice(0, 3), // Top 3 most relevant articles
+  //     totalRelevantArticles: reporter.articleCount,
+  //     email: null, // TODO: Add contact enrichment
+  //     linkedin: null,
+  //     twitter: null
+  //   }));
 
-  return reporters;
+  return Array.from(reporterMap.values());
 }
 
 /**

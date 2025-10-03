@@ -340,6 +340,7 @@ class S3VectorService {
         queryVector: { float32: Array.from(embeddingFloat32) },
         topK: limit,
         returnMetadata: true,
+        returnDistance: true
       });
       const response = await this.clientVector.send(command);
       return response.vectors;
