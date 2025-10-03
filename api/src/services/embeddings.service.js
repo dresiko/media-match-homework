@@ -84,7 +84,7 @@ class EmbeddingsService {
     
     // Content (truncate if too long)
     if (article.content) {
-      const maxContentLength = 10000;
+      const maxContentLength = 20000;
       const content = article.content.length > maxContentLength
         ? article.content.substring(0, maxContentLength) + '...'
         : article.content;

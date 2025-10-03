@@ -121,7 +121,6 @@ class GuardianAPIService {
             name: this.normalizeSection(article.sectionName)
           },
           publishedAt: article.webPublicationDate,
-          urlToImage: null, // Guardian API doesn't provide thumbnail in search
           // Additional Guardian-specific data
           contributorBio: contributor?.bio ? this.stripHtml(contributor.bio) : null,
           contributorTwitter: contributor?.twitterHandle || null

@@ -264,7 +264,7 @@ class S3VectorService {
 
     for (let i = 0; i < articles.length; i++) {
       try {
-        const result = await this.storeArticle(articles[i], embeddings[i]);
+        const result = await this.storeArticle(this.normalizeArticle(articles[i]), embeddings[i]);
         results.push(result);
       } catch (error) {
         console.error(`Failed to store article ${i}:`, error.message);
@@ -273,6 +273,13 @@ class S3VectorService {
     }
 
     return results;
+  }
+
+  normalizeArticle(article) {
+    return {
+      ...article,
+      content: article.content.slice(0, 1000),
+    };
   }
 
   /**
