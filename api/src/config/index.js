@@ -30,9 +30,10 @@ module.exports = {
   
   // Article Ingestion Configuration (Guardian API)
   ingestion: {
-    defaultPageSize: 200, // Guardian API max
-    defaultDaysBack: 30, // Fetch articles from last 30 days
-    defaultPages: 2, // Number of pages to fetch (200 * 2 = 400 articles)
+    defaultPageSize: 150, // Guardian API max
+    defaultDaysBack: 90, // Fetch articles from last X days
+    defaultPages: 6, // Number of pages to fetch (200 * 2 = 400 articles)
+    defaultFromPage: 1, // Page to start fetching from
     sections: [
       'technology',
       'business',

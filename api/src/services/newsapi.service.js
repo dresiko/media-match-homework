@@ -31,13 +31,14 @@ class GuardianAPIService {
         pages = 1, // Number of pages to fetch
         section = '', // e.g., 'technology', 'business'
         fromDate = this.getDateDaysAgo(config.ingestion.defaultDaysBack),
-        toDate = this.getDateDaysAgo(0)
+        toDate = this.getDateDaysAgo(0),
+        fromPage = 1,
       } = options;
 
       let allArticles = [];
 
       // Fetch multiple pages if requested
-      for (let page = 1; page <= pages; page++) {
+      for (let page = fromPage; page <= pages; page++) {
         const params = {
           'api-key': this.apiKey,
           'page-size': pageSize,
@@ -64,24 +65,20 @@ class GuardianAPIService {
           const articles = this.normalizeArticles(response.data.response.results);
           allArticles = allArticles.concat(articles);
           console.log(`✓ Fetched ${articles.length} articles from page ${page}`);
-
-          // Stop if we've reached the end
-          if (articles.length < pageSize) {
-            break;
-          }
         } else {
           throw new Error(`Guardian API error: ${response.data.response.message}`);
         }
 
         // Small delay between pages to respect rate limits
         if (page < pages) {
-          await this.sleep(100);
+          await this.sleep(1000);
         }
       }
 
       console.log(`✓ Total fetched: ${allArticles.length} articles`);
-      return [allArticles.at(0)];
+      return allArticles;
     } catch (error) {
+      console.log(error)
       console.error('Error fetching from Guardian API:', error.message);
       if (error.response?.status === 401 || error.response?.status === 403) {
         console.warn('Invalid API key, using mock data');

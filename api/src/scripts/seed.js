@@ -2,6 +2,7 @@
 const newsApiService = require('../services/newsapi.service');
 const embeddingsService = require('../services/embeddings.service');
 const s3VectorService = require('../services/s3vector.service');
+const config = require('../config');
 
 async function seed() {
   console.log('🌱 Starting article ingestion and vectorization...\n');
@@ -13,7 +14,9 @@ async function seed() {
     // Step 1: Fetch articles from NewsAPI
     console.log('\n📰 Step 1: Fetching articles from NewsAPI...');
     const articles = await newsApiService.fetchArticles({
-      pageSize: 200 // Adjust based on your needs
+      pageSize: config.ingestion.defaultPageSize,
+      pages: config.ingestion.defaultPages,
+      fromPage: config.ingestion.defaultFromPage
     });
 
     if (articles.length === 0) {
