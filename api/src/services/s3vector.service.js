@@ -336,7 +336,7 @@ class S3VectorService {
    * @param {number} limit - Number of results to return
    * @returns {Promise<Array<Object>>} Array of similar articles with scores
    */
-  async searchSimilar(queryEmbedding, limit = 10) {
+  async searchSimilar(queryEmbedding, limit = 30) {
     try {
       console.log("Searching for similar articles...");
       const embeddingFloat32 = Float32Array.from(queryEmbedding);
