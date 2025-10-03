@@ -35,7 +35,7 @@ A media matching system that helps PR professionals and founders quickly researc
 
 2. **Configure environment variables**
    ```bash
-   cp .env.example .env
+   cp .env.template .env
    # Edit .env with your AWS credentials and API keys
    ```
 

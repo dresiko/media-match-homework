@@ -8,9 +8,9 @@
 
 ## Environment Setup
 
-1. Copy the example environment file:
+1. Copy the template environment file:
    ```bash
-   cp .env.example .env
+   cp .env.template .env
    ```
 
 2. Edit `.env` with your credentials:

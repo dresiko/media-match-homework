@@ -1,4 +1,4 @@
-require('dotenv').config();
+// Config file loads .env from root automatically
 const newsApiService = require('../services/newsapi.service');
 const embeddingsService = require('../services/embeddings.service');
 const s3VectorService = require('../services/s3vector.service');

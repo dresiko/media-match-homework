@@ -8,6 +8,8 @@ const {
 } = require("@aws-sdk/client-s3");
 const {
   S3VectorsClient,
+  DeleteIndexCommand,
+  GetIndexCommand,
   PutVectorsCommand,
   QueryVectorsCommand,
   ListVectorsCommand,
@@ -84,13 +86,13 @@ class S3VectorService {
   async createVectorIndexIfNotExists() {
     try {
       // Check if index exists
-      const describeCommand = new DescribeIndexCommand({
+      const getIndexCommand = new GetIndexCommand({
         vectorBucketName: this.bucket,
         indexName: this.index,
       });
 
       try {
-        const response = await this.clientVector.send(describeCommand);
+        const response = await this.clientVector.send(getIndexCommand);
         console.log(`✓ Vector index '${this.index}' already exists`);
         console.log(`  - Status: ${response.status}`);
         console.log(`  - Vector dimensions: ${response.vectorDimensions}`);
@@ -103,7 +105,9 @@ class S3VectorService {
           const createCommand = new CreateIndexCommand({
             vectorBucketName: this.bucket,
             indexName: this.index,
-            vectorDimensions: config.openai.embeddingDimensions, // 1536 for text-embedding-3-small
+            dataType: 'float32',
+            dimension: config.openai.embeddingDimensions, // 768 for text-embedding-3-small
+            distanceMetric: 'cosine',
             indexType: 'HNSW', // Hierarchical Navigable Small World - best for semantic search
           });
 
@@ -118,6 +122,36 @@ class S3VectorService {
       }
     } catch (error) {
       console.error(`Error creating vector index: ${error.message}`);
+      throw error;
+    }
+  }
+  
+  async deleteVectorIndex() {
+    try {
+      const deleteCommand = new DeleteIndexCommand({
+        vectorBucketName: this.bucket,
+        indexName: this.index,
+      });
+      await this.clientVector.send(deleteCommand);
+      console.log(`✓ Vector index '${this.index}' deleted successfully`);
+      return true;
+    } catch (error) {
+      console.error(`Error deleting vector index: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async getVectorIndex() {
+    try {
+      const getIndexCommand = new GetIndexCommand({
+        vectorBucketName: this.bucket,
+        indexName: this.index,
+      });
+      const response = await this.clientVector.send(getIndexCommand);
+      console.log(`✓ Vector index '${this.index}' retrieved successfully`);
+      return response;
+    } catch (error) {
+      console.error(`Error getting vector index: ${error.message}`);
       throw error;
     }
   }
@@ -259,19 +293,15 @@ class S3VectorService {
     try {
       const command = new ListVectorsCommand({
         vectorBucketName: this.bucket,
-        indexName: this.index
+        indexName: this.index,
+        returnMetadata: true
       });
 
       const response = await this.clientVector.send(command);
-
-      if (!response.Contents || response.Contents.length === 0) {
+      if (!response.vectors || response.vectors.length === 0) {
         return [];
       }
-
-      return response.Contents.map((item) => {
-        const filename = item.Key.split("/").pop();
-        return filename.replace(".json", "");
-      });
+      return response.vectors
     } catch (error) {
       console.error("Error listing articles from S3:", error.message);
       throw error;

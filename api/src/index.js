@@ -1,11 +1,12 @@
-require('dotenv').config();
+// Config loads .env from root automatically
+const config = require('./config');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = config.port;
 
 // Middleware
 app.use(helmet());
@@ -53,6 +54,6 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Media Matching API running on port ${PORT}`);
   console.log(`📍 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔧 Environment: ${process.env.NODE_ENV}`);
+  console.log(`🔧 Environment: ${config.nodeEnv}`);
 });
 

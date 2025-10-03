@@ -17,6 +17,33 @@ router.post('/init', async (req, res) => {
   }
 });
 
+// POST /api/articles/index/truncate - Truncate S3 Vector storage
+router.post('/index/truncate', async (req, res) => {
+  try {
+    const results = [];
+    const deleteResult = await s3VectorService.deleteVectorIndex();
+    results.push(deleteResult);
+    const createResult = await s3VectorService.createVectorIndexIfNotExists();
+    results.push(createResult);
+    res.json({
+      message: 'Storage truncated successfully',
+      deleteResult,
+      createResult
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/index', async (req, res) => {
+  try {
+    const index = await s3VectorService.getVectorIndex();
+    res.json(index);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET /api/articles - List articles from S3
 router.get('/', async (req, res) => {
   try {

@@ -1,3 +1,7 @@
+// Load environment variables from root .env file
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+
 module.exports = {
   port: process.env.PORT || 3001,
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -9,7 +13,7 @@ module.exports = {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     s3: {
       vectorBucket: process.env.S3_VECTOR_BUCKET || 'media-matching-vectors',
-      vectorIndex: process.env.S3_VECTOR_ARTICLES_INDEX || 'articles-index'
+      vectorIndex: process.env.S3_VECTOR_INDEX || 'articles-index'
     }
   },
   

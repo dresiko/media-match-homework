@@ -1,4 +1,4 @@
-require('dotenv').config();
+// Config file loads .env from root automatically
 const s3VectorService = require('../services/s3vector.service');
 
 async function initializeStorage() {
