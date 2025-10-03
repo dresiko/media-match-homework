@@ -185,7 +185,7 @@ guardian.fetchArticles({ pageSize: 5 }).then(console.log);
 ### "Cannot find module"
 ```bash
 cd api
-npm install
+yarn install
 ```
 
 ### ".env not loading"

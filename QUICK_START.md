@@ -103,10 +103,10 @@ Debug locally using the same `.env` file:
 ```bash
 # Install dependencies
 cd api
-npm install
+yarn install
 
 # Run with debugger
-npm run seed:debug
+yarn seed:debug
 
 # Or use VS Code
 # Press F5 → Select "Debug Seed Script"

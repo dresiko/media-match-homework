@@ -16,7 +16,7 @@ services:
     volumes:
       - ./api:/app
       - /app/node_modules
-    command: npm run dev
+    command: yarn dev
     restart: unless-stopped
     networks:
       - media-matching-network
@@ -33,7 +33,7 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    command: npm start
+    command: yarn start
     restart: unless-stopped
     networks:
       - media-matching-network

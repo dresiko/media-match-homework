@@ -20,13 +20,13 @@ down: ## Stop and remove containers
 
 clean: ## Stop containers and remove volumes
 	docker-compose down -v
-	rm -rf api/node_modules frontend/node_modules
+	rm -rf api/node_modules frontend/node_modules api/yarn.lock frontend/yarn.lock
 
 init: ## Initialize S3 Vector storage (bucket and index)
-	docker-compose exec api npm run init
+	docker-compose exec api yarn init
 
 seed: ## Seed the database with sample articles
-	docker-compose exec api npm run seed
+	docker-compose exec api yarn seed
 
 logs: ## Show logs from all containers
 	docker-compose logs -f

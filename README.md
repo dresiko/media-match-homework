@@ -13,10 +13,11 @@ A media matching system that helps PR professionals and founders quickly researc
 
 ## 🏗️ Architecture
 
-- **Backend**: Node.js/Express API
-- **Frontend**: React-based chat interface
+- **Backend**: Node.js/Express API (managed with Yarn)
+- **Frontend**: React-based chat interface (managed with Yarn)
 - **Vector Storage**: Amazon S3 Vectors for semantic search
-- **Embeddings**: Sentence transformers for article vectorization
+- **Embeddings**: OpenAI text-embedding-3-small for article vectorization
+- **Package Manager**: Yarn (faster, more reliable than npm)
 
 ## 🚀 Quick Start
 
@@ -24,7 +25,8 @@ A media matching system that helps PR professionals and founders quickly researc
 
 - Docker & Docker Compose
 - AWS Account with S3 access
-- (Optional) NewsAPI key for article ingestion
+- Yarn (for local development) - `npm install -g yarn`
+- (Optional) NewsAPI or Guardian API key for article ingestion
 
 ### Setup
 
@@ -56,6 +58,7 @@ A media matching system that helps PR professionals and founders quickly researc
 Load sample articles into the system:
 ```bash
 make seed
+# or locally: cd api && yarn seed
 ```
 
 ## 📝 Usage
@@ -90,16 +93,32 @@ We're partnering with AWS to power our mortgage platform, delivering infrastruct
 
 ## 🛠️ Development Commands
 
+### Using Make (Docker - Recommended)
 ```bash
-make dev           # Start development environment
+make dev           # Start development environment (uses Yarn via Docker)
 make build         # Build Docker images
 make up            # Start containers (detached)
 make down          # Stop containers
 make clean         # Remove containers and volumes
-make seed          # Seed sample data
+make init          # Initialize S3 storage
+make seed          # Seed sample data (uses Yarn)
 make logs          # View all logs
 make logs-api      # View API logs
 make shell-api     # Open shell in API container
+```
+
+### Local Development (Yarn)
+```bash
+cd api
+yarn install       # Install dependencies
+yarn dev           # Start API server
+yarn seed          # Seed articles
+yarn seed:debug    # Debug seed script
+
+cd frontend
+yarn install       # Install dependencies
+yarn start         # Start React dev server
+yarn build         # Build for production
 ```
 
 ## 📦 Project Structure

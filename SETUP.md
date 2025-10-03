@@ -34,7 +34,7 @@
 ### Option 1: Using Make (Recommended)
 
 ```bash
-# Start the application
+# Start the application (uses yarn via Docker)
 make dev
 
 # Run in another terminal to seed articles
