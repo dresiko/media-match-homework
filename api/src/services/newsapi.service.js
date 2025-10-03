@@ -1,71 +1,89 @@
 const axios = require('axios');
 const config = require('../config');
 
-class NewsAPIService {
+class GuardianAPIService {
   constructor() {
-    this.apiKey = config.newsApiKey;
-    this.baseUrl = 'https://newsapi.org/v2';
+    this.apiKey = config.guardianApiKey;
+    this.baseUrl = 'https://content.guardianapis.com';
   }
 
   /**
-   * Fetch articles from NewsAPI
+   * Fetch articles from The Guardian API
    * @param {Object} options - Query options
    * @param {string} options.query - Search query
-   * @param {Array<string>} options.sources - News sources
-   * @param {Array<string>} options.domains - Domains to search
-   * @param {number} options.pageSize - Number of results per page
-   * @param {string} options.from - Start date (ISO format)
-   * @param {string} options.to - End date (ISO format)
+   * @param {number} options.pageSize - Number of results per page (max 200)
+   * @param {number} options.pages - Number of pages to fetch
+   * @param {string} options.section - Section filter (e.g., 'technology', 'business')
+   * @param {string} options.fromDate - Start date (YYYY-MM-DD format)
+   * @param {string} options.toDate - End date (YYYY-MM-DD format)
    * @returns {Promise<Array>} Array of articles
    */
   async fetchArticles(options = {}) {
     if (!this.apiKey) {
-      console.warn('NEWS_API_KEY not configured, using mock data');
+      console.warn('GUARDIAN_API_KEY not configured, using mock data');
       return this.getMockArticles();
     }
 
     try {
       const {
-        query = 'technology OR startup OR business',
-        sources = config.ingestion.sources.join(','),
-        domains = config.ingestion.domains.join(','),
-        pageSize = 100,
-        from = this.getDateDaysAgo(config.ingestion.defaultDaysBack),
-        to = this.getDateDaysAgo(0)
+        query = 'technology OR startup OR business OR innovation',
+        pageSize = 200, // Guardian max is 200
+        pages = 1, // Number of pages to fetch
+        section = '', // e.g., 'technology', 'business'
+        fromDate = this.getDateDaysAgo(config.ingestion.defaultDaysBack),
+        toDate = this.getDateDaysAgo(0)
       } = options;
 
-      const params = {
-        apiKey: this.apiKey,
-        language: 'en',
-        sortBy: 'publishedAt',
-        pageSize,
-        from,
-        to
-      };
+      let allArticles = [];
 
-      // Use either sources or domains, not both
-      if (sources && !options.domains) {
-        params.sources = sources;
-      } else if (domains) {
-        params.domains = domains;
+      // Fetch multiple pages if requested
+      for (let page = 1; page <= pages; page++) {
+        const params = {
+          'api-key': this.apiKey,
+          'page-size': pageSize,
+          'page': page,
+          'show-fields': 'body,byline',
+          'show-tags': 'contributor',
+          'order-by': 'newest',
+          'from-date': fromDate,
+          'to-date': toDate
+        };
+
+        if (query) {
+          params['q'] = query;
+        }
+
+        if (section) {
+          params['section'] = section;
+        }
+
+        console.log(`Fetching articles from The Guardian API (page ${page}/${pages})...`);
+        const response = await axios.get(`${this.baseUrl}/search`, { params });
+
+        if (response.data.response.status === 'ok') {
+          const articles = this.normalizeArticles(response.data.response.results);
+          allArticles = allArticles.concat(articles);
+          console.log(`✓ Fetched ${articles.length} articles from page ${page}`);
+
+          // Stop if we've reached the end
+          if (articles.length < pageSize) {
+            break;
+          }
+        } else {
+          throw new Error(`Guardian API error: ${response.data.response.message}`);
+        }
+
+        // Small delay between pages to respect rate limits
+        if (page < pages) {
+          await this.sleep(100);
+        }
       }
 
-      // if (query) {
-      //   params.q = query;
-      // }
-
-      console.log('Fetching articles from NewsAPI...');
-      const response = await axios.get(`${this.baseUrl}/top-headlines`, { params });
-
-      if (response.data.status === 'ok') {
-        console.log(`Fetched ${response.data.articles.length} articles`);
-        return this.normalizeArticles(response.data.articles);
-      } else {
-        throw new Error(`NewsAPI error: ${response.data.message}`);
-      }
+      console.log(`✓ Total fetched: ${allArticles.length} articles`);
+      return [allArticles.at(0)];
     } catch (error) {
-      console.error('Error fetching from NewsAPI:', error.message);
-      if (error.response?.status === 401) {
+      console.error('Error fetching from Guardian API:', error.message);
+      if (error.response?.status === 401 || error.response?.status === 403) {
         console.warn('Invalid API key, using mock data');
         return this.getMockArticles();
       }
@@ -78,17 +96,66 @@ class NewsAPIService {
    */
   normalizeArticles(articles) {
     return articles
-      .filter(article => article.author && article.title && article.description)
-      .map(article => ({
-        title: article.title,
-        description: article.description,
-        content: article.content || article.description,
-        url: article.url,
-        author: this.normalizeAuthor(article.author),
-        source: this.normalizeSource(article.source?.name),
-        publishedAt: article.publishedAt,
-        urlToImage: article.urlToImage
-      }));
+      .filter(article => {
+        // Must have contributor tags and body content
+        const hasContributor = article.tags && article.tags.some(tag => tag.type === 'contributor');
+        const hasBody = article.fields && article.fields.body;
+        return hasContributor && hasBody && article.webTitle;
+      })
+      .map(article => {
+        // Extract author from contributor tags
+        const contributor = article.tags.find(tag => tag.type === 'contributor');
+        const author = contributor ? this.extractAuthorName(contributor) : 'Unknown';
+
+        // Extract description from body (first paragraph)
+        const description = this.extractDescription(article.fields.body);
+
+        return {
+          title: article.webTitle,
+          description: description,
+          content: this.stripHtml(article.fields.body),
+          url: article.webUrl,
+          author: author,
+          source: {
+            id: article.sectionId,
+            name: this.normalizeSection(article.sectionName)
+          },
+          publishedAt: article.webPublicationDate,
+          urlToImage: null, // Guardian API doesn't provide thumbnail in search
+          // Additional Guardian-specific data
+          contributorBio: contributor?.bio ? this.stripHtml(contributor.bio) : null,
+          contributorTwitter: contributor?.twitterHandle || null
+        };
+      });
+  }
+
+  /**
+   * Extract author name from contributor tag
+   */
+  extractAuthorName(contributor) {
+    // Use webTitle as it's the display name
+    return contributor.webTitle || contributor.firstName + ' ' + contributor.lastName || 'Unknown';
+  }
+
+  /**
+   * Extract description from HTML body (first paragraph)
+   */
+  extractDescription(htmlBody) {
+    // Remove HTML tags and get first ~200 characters
+    const text = this.stripHtml(htmlBody);
+    const firstParagraph = text.split('\n').find(p => p.trim().length > 50) || text;
+    return firstParagraph.substring(0, 250).trim() + (firstParagraph.length > 250 ? '...' : '');
+  }
+
+  /**
+   * Strip HTML tags from text
+   */
+  stripHtml(html) {
+    if (!html) return '';
+    return html
+      .replace(/<[^>]*>/g, ' ') // Remove HTML tags
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim();
   }
 
   /**
@@ -107,25 +174,31 @@ class NewsAPIService {
   }
 
   /**
-   * Normalize source names
+   * Normalize Guardian section names
    */
-  normalizeSource(source) {
-    if (!source) return 'Unknown';
+  normalizeSection(section) {
+    if (!section) return 'The Guardian';
     
-    const sourceMap = {
-      'TechCrunch': 'TechCrunch',
-      'The Wall Street Journal': 'Wall Street Journal',
-      'The Verge': 'The Verge',
-      'Wired': 'WIRED',
-      'Business Insider': 'Business Insider',
-      'Fortune': 'Fortune',
-      'Forbes': 'Forbes',
-      'Bloomberg': 'Bloomberg',
-      'CNBC': 'CNBC',
-      'Reuters': 'Reuters'
+    const sectionMap = {
+      'Technology': 'The Guardian - Technology',
+      'Business': 'The Guardian - Business',
+      'US news': 'The Guardian - US News',
+      'World news': 'The Guardian - World News',
+      'Money': 'The Guardian - Money',
+      'Science': 'The Guardian - Science',
+      'Media': 'The Guardian - Media',
+      'Environment': 'The Guardian - Environment',
+      'Opinion': 'The Guardian - Opinion'
     };
 
-    return sourceMap[source] || source;
+    return sectionMap[section] || `The Guardian - ${section}`;
+  }
+
+  /**
+   * Sleep utility for rate limiting
+   */
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
@@ -148,9 +221,11 @@ class NewsAPIService {
         content: 'A pioneering battery technology company has announced a major breakthrough in electric vehicle battery production using domestically-sourced metallurgical silicon. The innovation promises to reduce costs and strengthen the US supply chain for critical EV components.',
         url: 'https://example.com/battery-silicon-breakthrough',
         author: 'Sarah Chen',
-        source: 'TechCrunch',
+        source: { id: 'technology', name: 'The Guardian - Technology' },
         publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        urlToImage: null
+        urlToImage: null,
+        contributorBio: null,
+        contributorTwitter: null
       },
       {
         title: 'Restaurant Robotics Sees $12M Investment as Labor Crisis Continues',
@@ -158,9 +233,11 @@ class NewsAPIService {
         content: 'The restaurant industry is turning to robotics and automation as a solution to persistent labor shortages. One startup has raised $12M in seed funding to deploy its platform across quick-serve operations nationwide.',
         url: 'https://example.com/restaurant-robotics-funding',
         author: 'Michael Rodriguez',
-        source: 'Business Insider',
+        source: { id: 'business', name: 'The Guardian - Business' },
         publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        urlToImage: null
+        urlToImage: null,
+        contributorBio: null,
+        contributorTwitter: null
       },
       {
         title: 'Fintech Platform Partners with AWS to Transform Mortgage Processing',
@@ -168,9 +245,11 @@ class NewsAPIService {
         content: 'A leading mortgage technology platform has announced a strategic partnership with Amazon Web Services to modernize its infrastructure. The move is expected to significantly reduce latency and costs while improving compliance capabilities.',
         url: 'https://example.com/fintech-aws-partnership',
         author: 'Jennifer Park',
-        source: 'Forbes',
+        source: { id: 'money', name: 'The Guardian - Money' },
         publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        urlToImage: null
+        urlToImage: null,
+        contributorBio: null,
+        contributorTwitter: null
       },
       {
         title: 'Climate Tech Investment Surges as US Manufacturing Returns',
@@ -178,9 +257,11 @@ class NewsAPIService {
         content: 'Investment in climate technology companies focused on US manufacturing has reached new highs. The trend is driven by renewed emphasis on domestic supply chains and materials innovation.',
         url: 'https://example.com/climate-tech-surge',
         author: 'David Kim',
-        source: 'Bloomberg',
+        source: { id: 'environment', name: 'The Guardian - Environment' },
         publishedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        urlToImage: null
+        urlToImage: null,
+        contributorBio: null,
+        contributorTwitter: null
       },
       {
         title: 'Robotics Automation Tackles Quick-Service Restaurant Operations',
@@ -188,13 +269,15 @@ class NewsAPIService {
         content: 'The fast food industry is embracing robotics automation to streamline operations and address labor challenges. New platforms are making industrial automation accessible to quick-service restaurants.',
         url: 'https://example.com/robotics-qsr-automation',
         author: 'Alex Thompson',
-        source: 'The Verge',
+        source: { id: 'technology', name: 'The Guardian - Technology' },
         publishedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
-        urlToImage: null
+        urlToImage: null,
+        contributorBio: null,
+        contributorTwitter: null
       }
     ];
   }
 }
 
-module.exports = new NewsAPIService();
+module.exports = new GuardianAPIService();
 

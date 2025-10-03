@@ -13,7 +13,7 @@ async function seed() {
     // Step 1: Fetch articles from NewsAPI
     console.log('\n📰 Step 1: Fetching articles from NewsAPI...');
     const articles = await newsApiService.fetchArticles({
-      pageSize: 50 // Adjust based on your needs
+      pageSize: 200 // Adjust based on your needs
     });
 
     if (articles.length === 0) {

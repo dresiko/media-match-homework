@@ -19,6 +19,7 @@ module.exports = {
   
   // API Keys
   newsApiKey: process.env.NEWS_API_KEY,
+  guardianApiKey: process.env.GUARDIAN_API_KEY,
   openaiApiKey: process.env.OPENAI_API_KEY,
   
   // OpenAI Configuration
@@ -27,33 +28,20 @@ module.exports = {
     embeddingDimensions: 768
   },
   
-  // Article Ingestion Configuration
+  // Article Ingestion Configuration (Guardian API)
   ingestion: {
-    defaultPageSize: 100,
+    defaultPageSize: 200, // Guardian API max
     defaultDaysBack: 30, // Fetch articles from last 30 days
-    sources: [
-      'techcrunch',
-      'the-wall-street-journal',
-      'the-verge',
-      'wired',
-      'business-insider',
-      'fortune',
-      'forbes',
-      'bloomberg',
-      'cnbc',
-      'reuters'
-    ],
-    domains: [
-      'techcrunch.com',
-      'wsj.com',
-      'theverge.com',
-      'wired.com',
-      'businessinsider.com',
-      'fortune.com',
-      'forbes.com',
-      'bloomberg.com',
-      'cnbc.com',
-      'reuters.com'
+    defaultPages: 2, // Number of pages to fetch (200 * 2 = 400 articles)
+    sections: [
+      'technology',
+      'business',
+      'us-news',
+      'world/world',
+      'money',
+      'science',
+      'media',
+      'environment'
     ]
   }
 };

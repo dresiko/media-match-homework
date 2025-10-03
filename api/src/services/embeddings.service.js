@@ -84,11 +84,31 @@ class EmbeddingsService {
     
     // Content (truncate if too long)
     if (article.content) {
-      const maxContentLength = 5000;
+      const maxContentLength = 10000;
       const content = article.content.length > maxContentLength
         ? article.content.substring(0, maxContentLength) + '...'
         : article.content;
       parts.push("Content: " + content);
+    }
+
+    if(article.contributorBio) {
+      parts.push("ContributorBio: " + article.contributorBio);
+    }
+
+    if(article.contributorTwitter) {
+      parts.push("ContributorTwitter: " + article.contributorTwitter);
+    }
+
+    if(article.publishedAt) {
+      parts.push("PublishedAt: " + article.publishedAt);
+    }
+
+    if(article.url) {
+      parts.push("Url: " + article.url);
+    }
+
+    if(article.urlToImage) {
+      parts.push("UrlToImage: " + article.urlToImage);
     }
     
     return parts.join(' ');

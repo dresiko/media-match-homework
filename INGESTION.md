@@ -37,19 +37,17 @@ NewsAPI → Fetch Articles → Generate Embeddings (OpenAI) → Store in S3 Vect
 - **Dimensions**: 1536
 - **Cost-effective** and suitable for semantic search
 
-### NewsAPI Sources
+### The Guardian API Sections
 
-Default sources include:
-- TechCrunch
-- Wall Street Journal
-- The Verge
-- WIRED
-- Business Insider
-- Fortune
-- Forbes
-- Bloomberg
-- CNBC
-- Reuters
+Default sections include:
+- Technology
+- Business
+- US News
+- World News
+- Money (Finance)
+- Science
+- Media
+- Environment
 
 ## Usage
 
