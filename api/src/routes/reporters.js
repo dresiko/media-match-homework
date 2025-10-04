@@ -87,7 +87,8 @@ function extractReportersFromArticles(articles, limit) {
         name: author,
         outlet: source,
         relevantArticles: [],
-        articleCount: 0
+        articleCount: 0,
+        lowestDistance: Infinity
       });
     }
 
@@ -103,28 +104,29 @@ function extractReportersFromArticles(articles, limit) {
     });
 
     reporter.articleCount += 1;
+    reporter.lowestDistance = Math.min(reporter.lowestDistance, article.distance);
   });
 
-  // // Convert to array and sort by average similarity
-  // const reporters = Array.from(reporterMap.values())
-  //   .sort((a, b) => b.averageSimilarity - a.averageSimilarity)
-  //   .slice(0, limit)
-  //   .map((reporter, index) => ({
-  //     rank: index + 1,
-  //     name: reporter.name,
-  //     outlet: reporter.outlet,
-  //     matchScore: Math.round(reporter.averageSimilarity * 100),
-  //     justification: generateJustification(reporter),
-  //     recentArticles: reporter.relevantArticles
-  //       .sort((a, b) => b.similarity - a.similarity)
-  //       .slice(0, 3), // Top 3 most relevant articles
-  //     totalRelevantArticles: reporter.articleCount,
-  //     email: null, // TODO: Add contact enrichment
-  //     linkedin: null,
-  //     twitter: null
-  //   }));
+  // Convert to array and sort by lowest distance
+  const reporters = Array.from(reporterMap.values())
+    .sort((a, b) => a.lowestDistance - b.lowestDistance)
+    .slice(0, limit)
+    .map((reporter, index) => ({
+      rank: index + 1,
+      name: reporter.name,
+      outlet: reporter.outlet,
+      matchScore: Math.round((1 - reporter.lowestDistance) * 100),
+      justification: generateJustification(reporter),
+      recentArticles: reporter.relevantArticles
+        .sort((a, b) => b.similarity - a.similarity)
+        .slice(0, 3), // Top 3 most relevant articles
+      totalRelevantArticles: reporter.articleCount,
+      email: null, // TODO: Add contact enrichment
+      linkedin: null,
+      twitter: null
+    }));
 
-  return Array.from(reporterMap.values());
+  return reporters
 }
 
 /**
