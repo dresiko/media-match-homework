@@ -1,7 +1,11 @@
 const OpenAI = require('openai');
 const config = require('../config');
 
-class EmbeddingsService {
+/**
+ * OpenAI Service
+ * Handles all OpenAI API interactions including embeddings and chat completions
+ */
+class OpenAIService {
   constructor() {
     if (config.openaiApiKey) {
       this.openai = new OpenAI({
@@ -178,7 +182,98 @@ class EmbeddingsService {
       return Array.from({ length: this.dimensions }, () => Math.random() - 0.5);
     });
   }
+
+  /**
+   * Generate a justification for why a reporter is a good match for the story brief
+   * @param {Object} params - Parameters for justification
+   * @param {string} params.storyBrief - The story brief from the user
+   * @param {Object} params.reporter - Reporter information
+   * @param {Array} params.recentArticles - Reporter's most relevant articles
+   * @returns {Promise<string>} Justification text
+   */
+  async generateReporterJustification({ storyBrief, reporter, recentArticles }) {
+    if (!this.openai) {
+      console.warn('OpenAI not configured, using simple justification');
+      return this.generateSimpleJustification(reporter);
+    }
+
+    try {
+      // Prepare articles context
+      const articlesContext = recentArticles.map((article, idx) => 
+        `${idx + 1}. "${article.title}" (${article.publishedAt})\n   ${article.description || 'No description'}`
+      ).join('\n\n');
+
+      const prompt = `You are analyzing why a journalist is a good match for a PR pitch.
+
+Story Brief: "${storyBrief}"
+
+Reporter: ${reporter.name}
+Outlet: ${reporter.outlet}
+Number of relevant articles: ${reporter.articleCount}
+
+Recent Relevant Articles:
+${articlesContext}
+
+Task: Write a concise, professional 1-2 sentence justification explaining why this reporter is a strong match for the story brief. Focus on:
+- Their coverage history and expertise
+- Relevance of their recent work
+- Timeliness of their coverage
+- Their outlet's reach
+
+Keep it factual and specific. Do not use bullet points or special formatting.`;
+
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a PR expert analyzing reporter matches. Provide concise, professional justifications.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 150
+      });
+
+      return response.choices[0].message.content.trim();
+    } catch (error) {
+      console.error('Error generating justification:', error.message);
+      // Fall back to simple justification
+      return this.generateSimpleJustification(reporter);
+    }
+  }
+
+  /**
+   * Generate a simple rule-based justification (fallback)
+   */
+  generateSimpleJustification(reporter) {
+    const points = [];
+
+    if (reporter.articleCount > 1) {
+      points.push(`Wrote ${reporter.articleCount} highly relevant articles`);
+    } else {
+      points.push(`Wrote on highly relevant topic`);
+    }
+
+    const recentArticle = reporter.relevantArticles[0];
+    if (recentArticle) {
+      const publishDate = new Date(recentArticle.publishedAt);
+      const daysAgo = Math.floor((Date.now() - publishDate) / (1000 * 60 * 60 * 24));
+      
+      if (daysAgo < 7) {
+        points.push(`Published relevant coverage within the last week`);
+      } else if (daysAgo < 30) {
+        points.push(`Recently covered similar topics (${daysAgo} days ago)`);
+      }
+    }
+
+    points.push(`Covers for ${reporter.outlet}`);
+
+    return points.join('; ');
+  }
 }
 
-module.exports = new EmbeddingsService();
-
+module.exports = new OpenAIService();

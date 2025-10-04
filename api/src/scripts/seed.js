@@ -1,6 +1,6 @@
 // Config file loads .env from root automatically
 const newsApiService = require('../services/newsapi.service');
-const embeddingsService = require('../services/embeddings.service');
+const openaiService = require('../services/openai.service');
 const s3VectorService = require('../services/s3vector.service');
 const config = require('../config');
 
@@ -29,7 +29,7 @@ async function seed() {
 
     // Step 2: Generate embeddings for articles
     console.log('🤖 Step 2: Generating embeddings with OpenAI...');
-    const embeddings = await embeddingsService.generateArticleEmbeddingsBatch(articles, 10);
+    const embeddings = await openaiService.generateArticleEmbeddingsBatch(articles, 10);
     console.log(`✓ Generated ${embeddings.length} embeddings\n`);
 
     // Step 3: Store articles with embeddings in S3

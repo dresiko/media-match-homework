@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const newsApiService = require('../services/newsapi.service');
-const embeddingsService = require('../services/embeddings.service');
+const openaiService = require('../services/openai.service');
 const s3VectorService = require('../services/s3vector.service');
 
 // POST /api/articles/init - Initialize S3 Vector storage
@@ -93,7 +93,7 @@ router.post('/ingest', async (req, res) => {
     }
 
     // Generate embeddings
-    const embeddings = await embeddingsService.generateArticleEmbeddingsBatch(articles, 10);
+    const embeddings = await openaiService.generateArticleEmbeddingsBatch(articles, 10);
     
     // Store in S3
     const results = await s3VectorService.storeArticlesBatch(articles, embeddings);

@@ -3,6 +3,7 @@ const router = express.Router();
 const queryService = require("../services/query.service");
 const s3VectorService = require("../services/s3vector.service");
 const reportersContactService = require("../services/reporters-contact.service");
+const openaiService = require("../services/openai.service");
 
 // POST /api/reporters/match - Match reporters to story brief
 router.post("/match", async (req, res) => {
@@ -45,8 +46,8 @@ router.post("/match", async (req, res) => {
     console.log(`✓ Found ${similarArticles.length} similar articles`);
 
     // Step 4: Extract and rank reporters
-    const reporters = extractReportersFromArticles(similarArticles, limit);
-    console.log(`✓ Extracted ${reporters.length} unique reporters`);
+    const reporters = await extractReportersFromArticles(similarArticles, limit, storyBrief);
+    console.log(`✓ Extracted ${reporters.length} unique reporters with AI justifications`);
 
     // Step 5: Extract key topics for explainability
     const keyTopics = queryService.extractKeyTopics(storyBrief);
@@ -71,7 +72,7 @@ router.post("/match", async (req, res) => {
 /**
  * Extract unique reporters from articles and rank them
  */
-function extractReportersFromArticles(articles, limit) {
+async function extractReportersFromArticles(articles, limit, storyBrief) {
   const reporterMap = new Map();
 
   articles.forEach((article) => {
@@ -126,27 +127,46 @@ function extractReportersFromArticles(articles, limit) {
   });
 
   // Convert to array and sort by lowest distance
-  const reporters = Array.from(reporterMap.values())
+  const sortedReporters = Array.from(reporterMap.values())
     .sort((a, b) => a.lowestDistance - b.lowestDistance)
-    .slice(0, limit)
-    .map((reporter, index) => ({
-      ...reporter,
-      rank: index + 1,
-      matchScore: Math.round((1 - reporter.lowestDistance) * 100),
-      relevantArticles: reporter.relevantArticles
-        .sort((a, b) => b.similarity - a.similarity)
-        .slice(0, 3), // Top 3 most relevant articles
-    }));
+    .slice(0, limit);
 
-  return reporters;
-}
+  // Generate AI justifications for each reporter (parallel execution)
+  console.log(`🤖 Generating AI justifications for ${sortedReporters.length} reporters...`);
+  
+  const reportersWithJustifications = await Promise.all(
+    sortedReporters.map(async (reporter, index) => {
+      const recentArticles = reporter.relevantArticles
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 3); // Top 3 most relevant articles
 
-/**
- * Generate human-readable justification for why this reporter is a good match
- */
-function generateJustification(reporter) {
-  // TODO: Implement
-  return "";
+      // Generate justification using LLM
+      const justification = await openaiService.generateReporterJustification({
+        storyBrief,
+        reporter: {
+          name: reporter.name,
+          outlet: reporter.outlet,
+          articleCount: reporter.totalRecentArticles
+        },
+        recentArticles
+      });
+
+      return {
+        rank: index + 1,
+        name: reporter.name,
+        outlet: reporter.outlet,
+        matchScore: Math.round((1 - reporter.lowestDistance) * 100),
+        justification,
+        recentArticles,
+        totalRelevantArticles: reporter.totalRecentArticles,
+        email: reporter.email || null,
+        linkedin: reporter.linkedin || null,
+        twitter: reporter.twitter || null
+      };
+    })
+  );
+
+  return reportersWithJustifications;
 }
 
 // GET /api/reporters/contact?name=Reporter Name - Get contact info by name

@@ -1,4 +1,4 @@
-const embeddingsService = require('./embeddings.service');
+const openaiService = require('./openai.service');
 
 class QueryService {
   /**
@@ -95,7 +95,7 @@ class QueryService {
     console.log('📝 Query text:', queryText);
 
     // Generate embedding using OpenAI
-    const embeddings = await embeddingsService.generateEmbeddings(queryText);
+    const embeddings = await openaiService.generateEmbeddings(queryText);
     
     return embeddings[0];
   }
