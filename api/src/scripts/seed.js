@@ -5,6 +5,7 @@ const s3VectorService = require('../services/s3vector.service');
 const config = require('../config');
 
 async function seed() {
+  const args = process.argv.slice(2); 
   console.log('🌱 Starting article ingestion and vectorization...\n');
 
   try {

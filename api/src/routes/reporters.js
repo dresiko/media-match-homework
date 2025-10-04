@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const queryService = require('../services/query.service');
 const s3VectorService = require('../services/s3vector.service');
+const reportersContactService = require('../services/reporters-contact.service');
 
 // POST /api/reporters/match - Match reporters to story brief
 router.post('/match', async (req, res) => {
@@ -160,6 +161,99 @@ function generateJustification(reporter) {
 
   return points.join('; ');
 }
+
+// GET /api/reporters/contact?name=Reporter Name - Get contact info by name
+router.get('/contact', (req, res) => {
+  try {
+    const { name } = req.query;
+    
+    if (!name) {
+      return res.status(400).json({ 
+        error: 'Reporter name is required as query parameter' 
+      });
+    }
+
+    const contact = reportersContactService.getReporterContact(name);
+    
+    if (!contact) {
+      return res.status(404).json({ 
+        error: 'Reporter not found',
+        sanitizedName: reportersContactService.sanitizeName(name)
+      });
+    }
+
+    res.json(contact);
+  } catch (error) {
+    console.error('Error fetching reporter contact:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/reporters/contact/:name - Get contact info by name (path param)
+router.get('/contact/:name', (req, res) => {
+  try {
+    const { name } = req.params;
+    
+    if (!name) {
+      return res.status(400).json({ 
+        error: 'Reporter name is required' 
+      });
+    }
+
+    const contact = reportersContactService.getReporterContact(name);
+    
+    if (!contact) {
+      return res.status(404).json({ 
+        error: 'Reporter not found',
+        sanitizedName: reportersContactService.sanitizeName(name)
+      });
+    }
+
+    res.json(contact);
+  } catch (error) {
+    console.error('Error fetching reporter contact:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/reporters/search?q=query - Search reporters by name
+router.get('/search', (req, res) => {
+  try {
+    const { q } = req.query;
+    
+    if (!q) {
+      return res.status(400).json({ 
+        error: 'Search query (q) is required' 
+      });
+    }
+
+    const results = reportersContactService.searchReporters(q);
+    
+    res.json({
+      query: q,
+      results,
+      count: results.length
+    });
+  } catch (error) {
+    console.error('Error searching reporters:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/reporters/all - Get all reporters (for testing)
+router.get('/all', (req, res) => {
+  try {
+    const reporters = reportersContactService.getAllReporters();
+    
+    res.json({
+      reporters,
+      count: reporters.length
+    });
+  } catch (error) {
+    console.error('Error fetching all reporters:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;
 
