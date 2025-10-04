@@ -95,15 +95,12 @@ async function extractReportersFromArticles(articles, limit, storyBrief) {
       };
       const contactInfo = reportersContactService.getReporterContact(author);
       if (contactInfo) {
-        console.log("Contact info found for:", contactInfo);
         data = {
           ...data,
           email: contactInfo.email,
           linkedin: contactInfo.linkedin,
           twitter: contactInfo.twitter,
         };
-      } else {
-        console.log("No contact info found for:", author);
       }
       reporterMap.set(key, data);
     }

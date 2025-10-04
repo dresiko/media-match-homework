@@ -4,11 +4,11 @@ A media matching system that helps PR professionals and founders quickly researc
 
 ## 🎯 Features
 
-- **Conversational Wizard UI**: Beautiful multi-step form guiding users through story brief, outlet selection, and geography
+- **Chat-First Interface**: Interactive bot-driven conversation with message history and embedded controls
 - **Smart Reporter Matching**: Semantic search using Amazon S3 Vectors to find relevant journalists
 - **AI-Powered Justifications**: GPT-4o-mini generates unique explanations for each match
 - **Contact Enrichment**: 38 reporters with verified email, LinkedIn, and Twitter
-- **Multi-Filter Support**: Filter by outlet type, geography, and specific publications
+- **Multi-Select Buttons**: Pill-style buttons embedded in chat bubbles for outlet and geography selection
 - **CSV Export & Email Copy**: One-click exports for immediate outreach
 - **Recent Articles**: See 2-3 most relevant articles per reporter with relevance scores
 
@@ -65,16 +65,22 @@ make seed
 ## 📝 Usage
 
 1. Open http://localhost:3000 in your browser
-2. **Step 1:** Enter your story brief (minimum 10 characters)
-3. **Step 2:** Select outlet types (national business/tech, trade, regional, newsletters, podcasts)
-4. **Step 3:** Choose geography (US only, US + EU/UK, global)
-5. **Step 4:** (Optional) Add target publications or competitor context
-6. **Results:** View top 15 reporters with:
+2. **Chat with the bot:**
+   - 🤖 Bot asks: "What are you looking to pitch?"
+   - 👤 You type your story brief
+   - 🤖 Bot asks: "What outlet types?" (with multi-select buttons)
+   - 👤 You select options and submit
+   - 🤖 Bot asks: "What geography?" (with buttons)
+   - 👤 You select and submit
+   - 🤖 Bot asks: "Any optional details?" (skippable)
+   - 👤 You add details or skip
+   - 🤖 Bot searches and shows 15 matches!
+3. **View Results:** Top 15 reporters with:
    - Match scores (0-100)
    - AI-generated justifications
    - Contact info (email, LinkedIn, Twitter)
    - Recent relevant articles
-7. **Export:** Download CSV or copy emails for outreach
+4. **Export:** Download CSV or copy emails for outreach
 
 ## 🧪 Test Briefs
 
