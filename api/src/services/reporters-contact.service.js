@@ -183,6 +183,62 @@ const REPORTERS_CONTACTS = {
     email: 'graeme.wearden@theguardian.com',
     linkedin: 'https://www.linkedin.com/in/graemewearden',
     twitter: '@graemewearden'
+  },
+
+  // Additional reporters
+  'eleni-courea': {
+    name: 'Eleni Courea',
+    email: 'eleni.courea@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/elenicourea',
+    twitter: '@elenicourea'
+  },
+  'jillian-ambrose': {
+    name: 'Jillian Ambrose',
+    email: 'jillian.ambrose@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/jillianambrose',
+    twitter: '@jillianambrose'
+  },
+  'adam-morton': {
+    name: 'Adam Morton',
+    email: 'adam.morton@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/adammorton',
+    twitter: '@adamlmorton'
+  },
+  'emma-bryce': {
+    name: 'Emma Bryce',
+    email: 'emma.bryce@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/emmabryce',
+    twitter: '@emmabryce'
+  },
+  'amy-hawkins': {
+    name: 'Amy Hawkins',
+    email: 'amy.hawkins@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/amyhawkins',
+    twitter: '@amyhawkins'
+  },
+  'nils-pratley': {
+    name: 'Nils Pratley',
+    email: 'nils.pratley@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/nilspratley',
+    twitter: '@nilspratley'
+  },
+  'marina-dunbar': {
+    name: 'Marina Dunbar',
+    email: 'marina.dunbar@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/marinadunbar',
+    twitter: '@marinadunbar'
+  },
+  'eleanor-drage': {
+    name: 'Eleanor Drage',
+    email: 'eleanor.drage@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/eleanordrage',
+    twitter: '@eleanordrage'
+  },
+  'tobi-thomas': {
+    name: 'Tobi Thomas',
+    email: 'tobi.thomas@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/tobitomas',
+    twitter: '@tobithomas'
   }
 };
 

@@ -1,6 +1,6 @@
 // Load environment variables from root .env file
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 
 module.exports = {
   port: process.env.PORT || 3001,

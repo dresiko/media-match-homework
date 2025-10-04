@@ -129,16 +129,16 @@ console.log(results);
 
 The API includes mock contact data for reporters from the three challenge briefs:
 
-### Brief 1: Mortgage/Fintech (15 reporters)
+### Brief 1: Mortgage/Fintech
 - Nick Robins-Early, Kalyeena Makortoff, Lauren Almeida, Paul MacInnes, Blake Montgomery, Sarah Butler, Jasper Jolly, Luca Ittimani, Rupert Jones, Dan Milmo, Jamie Grierson, Julia Kollewe, Edward Helmore, Joanna Partridge
 
-### Brief 2: Restaurant Robotics (6 additional reporters)
-- Dara Kerr, Sammy Gecsoyler, Robert Booth, Alyx Gorman, Nick Huber, Alexander Abnos
+### Brief 2: Restaurant Robotics
+- Dara Kerr, Sammy Gecsoyler, Robert Booth, Alyx Gorman, Nick Huber, Alexander Abnos, Eleni Courea, Jillian Ambrose, Adam Morton, Emma Bryce, Amy Hawkins, Nils Pratley, Marina Dunbar, Eleanor Drage
 
-### Brief 3: Materials/EV/Climate (8 additional reporters)
-- Dharna Noor, Jonathan Watts, Gina McCarthy, Lisa O'Carroll, Jessica Elgot, Oliver Milman, Rebecca Solnit, Rob Davies, Graeme Wearden
+### Brief 3: Materials/EV/Climate
+- Dharna Noor, Jonathan Watts, Gina McCarthy, Lisa O'Carroll, Jessica Elgot, Oliver Milman, Rebecca Solnit, Rob Davies, Graeme Wearden, Tobi Thomas
 
-**Total: 29 unique reporters**
+**Total: 38 unique reporters**
 
 ## Error Handling
 
