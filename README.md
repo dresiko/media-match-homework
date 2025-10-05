@@ -88,8 +88,10 @@ make seed
    - 👤 You select options and submit
    - 🤖 Bot asks: "What geography?" (with buttons)
    - 👤 You select and submit
-   - 🤖 Bot asks: "Any optional details?" (skippable)
-   - 👤 You add details or skip
+   - 🤖 Bot asks: "Any specific publications?" (optional - leave blank to skip)
+   - 👤 You type publications or leave blank
+   - 🤖 Bot asks: "Any competitors or announcements?" (optional)
+   - 👤 You add context or leave blank
    - 🤖 Bot searches and shows 15 matches!
 3. **View Results:** Top 15 reporters with:
    - Match scores (0-100)

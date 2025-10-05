@@ -53,7 +53,7 @@ function App() {
 
   // Focus input when step changes
   useEffect(() => {
-    if (currentStep === 1 || currentStep === 4) {
+    if (currentStep === 1 || currentStep === 4 || currentStep === 5) {
       inputRef.current?.focus();
     }
   }, [currentStep]);
@@ -124,20 +124,37 @@ function App() {
     
     // Move to next step
     setTimeout(() => {
-      addMessage('bot', 'Got it! Would you like to add any optional details? (You can skip this)');
+      addMessage('bot', 'Perfect! Are there any specific publications I should focus on finding best-fit contacts at? (You can skip this by leaving it blank)');
       setCurrentStep(4);
     }, 500);
   };
 
-  const handleOptionalSubmit = (skip = false) => {
-    if (skip) {
-      addMessage('user', 'Skip optional details');
+  const handlePublicationsSubmit = () => {
+    // Add user message
+    if (inputValue.trim()) {
+      addMessage('user', inputValue);
+      formData.targetPublications = inputValue;
     } else {
-      const details = [];
-      if (formData.targetPublications) details.push(`Publications: ${formData.targetPublications}`);
-      if (formData.competitors) details.push(`Competitors: ${formData.competitors}`);
-      addMessage('user', details.join(', ') || 'No additional details');
+      addMessage('user', '(Skipped)');
     }
+    setInputValue('');
+    
+    // Move to next step
+    setTimeout(() => {
+      addMessage('bot', 'Got it! Are there any competitors or other announcements I should consider when running your search?');
+      setCurrentStep(5);
+    }, 500);
+  };
+
+  const handleCompetitorsSubmit = () => {
+    // Add user message
+    if (inputValue.trim()) {
+      addMessage('user', inputValue);
+      formData.competitors = inputValue;
+    } else {
+      addMessage('user', '(Skipped)');
+    }
+    setInputValue('');
     
     // Start search
     setTimeout(() => {
@@ -149,7 +166,7 @@ function App() {
   const handleSearch = async () => {
     setLoading(true);
     setError(null);
-    setCurrentStep(5);
+    setCurrentStep(6); // Loading step
 
     try {
       const response = await axios.post(`${API_URL}/api/reporters/match`, {
@@ -164,7 +181,7 @@ function App() {
       setResults(response.data);
       setTimeout(() => {
         addMessage('bot', `✅ Found ${response.data.reporters.length} perfect matches for you!`);
-        setCurrentStep(6); // Results view
+        setCurrentStep(7); // Results view
       }, 1000);
     } catch (err) {
       console.error('Error fetching reporters:', err);
@@ -202,6 +219,10 @@ function App() {
       e.preventDefault();
       if (currentStep === 1) {
         handleStorySubmit();
+      } else if (currentStep === 4) {
+        handlePublicationsSubmit();
+      } else if (currentStep === 5) {
+        handleCompetitorsSubmit();
       }
     }
   };
@@ -221,7 +242,7 @@ function App() {
       </header>
 
       <main className="chat-main">
-        {currentStep !== 6 ? (
+        {currentStep !== 7 ? (
           <div className="chat-container">
             <div className="messages-container">
               {messages.map((message, idx) => (
@@ -298,47 +319,8 @@ function App() {
                 </div>
               )}
 
-              {/* Step 4: Optional Details */}
-              {currentStep === 4 && (
-                <div className="chat-message bot-message">
-                  <div className="message-avatar bot-avatar">🤖</div>
-                  <div className="message-content interactive">
-                    <div className="optional-fields">
-                      <input
-                        type="text"
-                        className="chat-input-field"
-                        placeholder="Target publications (e.g., TechCrunch, WSJ)"
-                        value={formData.targetPublications}
-                        onChange={(e) => setFormData(prev => ({ ...prev, targetPublications: e.target.value }))}
-                      />
-                      <textarea
-                        className="chat-input-field"
-                        placeholder="Competitors or related context (optional)"
-                        value={formData.competitors}
-                        onChange={(e) => setFormData(prev => ({ ...prev, competitors: e.target.value }))}
-                        rows={2}
-                      />
-                    </div>
-                    <div className="chat-actions">
-                      <button
-                        className="btn-chat-secondary"
-                        onClick={() => handleOptionalSubmit(true)}
-                      >
-                        Skip
-                      </button>
-                      <button
-                        className="btn-chat-submit"
-                        onClick={() => handleOptionalSubmit(false)}
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Loading State */}
-              {currentStep === 5 && loading && (
+              {currentStep === 6 && loading && (
                 <div className="chat-message bot-message">
                   <div className="message-avatar bot-avatar">🤖</div>
                   <div className="message-content">
@@ -354,24 +336,36 @@ function App() {
               <div ref={chatEndRef} />
             </div>
 
-            {/* Input Area - Only show for step 1 */}
-            {currentStep === 1 && (
+            {/* Input Area - Show for steps 1, 4, 5 */}
+            {(currentStep === 1 || currentStep === 4 || currentStep === 5) && (
               <div className="chat-input-container">
                 <textarea
                   ref={inputRef}
                   className="chat-input"
-                  placeholder="Tell me about your story or announcement..."
+                  placeholder={
+                    currentStep === 1 
+                      ? "Tell me about your story or announcement..."
+                      : currentStep === 4
+                      ? "e.g., TechCrunch, The Information, WSJ (or leave blank to skip)"
+                      : "e.g., Similar to Stripe's AWS partnership announcement (or leave blank to skip)"
+                  }
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  rows={3}
+                  rows={currentStep === 1 ? 3 : 2}
                 />
                 <button
                   className="chat-send-button"
-                  onClick={handleStorySubmit}
-                  disabled={inputValue.trim().length < 10}
+                  onClick={
+                    currentStep === 1 
+                      ? handleStorySubmit 
+                      : currentStep === 4
+                      ? handlePublicationsSubmit
+                      : handleCompetitorsSubmit
+                  }
+                  disabled={currentStep === 1 && inputValue.trim().length < 10}
                 >
-                  Send
+                  {currentStep === 1 ? 'Send' : 'Submit'}
                 </button>
               </div>
             )}

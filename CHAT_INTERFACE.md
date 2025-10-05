@@ -56,15 +56,25 @@ The Media Matching MVP now features a **chat-style interface** that maintains al
    (You can skip this)
 ```
 
-### Step 4: Optional Details
+### Step 4: Target Publications (Optional)
 ```
-🤖 [Message with input fields]
-   [Target publications input]
-   [Competitors input]
-   
-   [Skip] [Submit]
+🤖 Perfect! Are there any specific publications I should 
+   focus on finding best-fit contacts at? 
+   (You can skip this by leaving it blank)
 
-👤 Skip optional details
+[User types in text area at bottom]
+
+👤 TechCrunch, The Information, WSJ
+
+🤖 Got it! Are there any competitors or other announcements 
+   I should consider when running your search?
+```
+
+### Step 5: Competitors Context (Optional)
+```
+[User types in text area at bottom]
+
+👤 Similar to Stripe's AWS partnership announcement
 
 🤖 🔍 Searching for the best reporters... 
    This will take a few seconds.
@@ -74,7 +84,7 @@ The Media Matching MVP now features a **chat-style interface** that maintains al
 🤖 ✅ Found 15 perfect matches for you!
 ```
 
-### Step 5: Results
+### Step 6: Results
 [Full results view with reporter cards, export options]
 
 ## 🎯 Key Features
@@ -100,10 +110,11 @@ The Media Matching MVP now features a **chat-style interface** that maintains al
 - **Smooth animations**: Messages slide in from bottom
 
 ### 4. Input Handling
-- **Step 1**: Text area at bottom of screen (always visible)
-- **Steps 2-4**: Inputs embedded in bot message bubbles
+- **Steps 1, 4, 5**: Text area at bottom of screen (for story brief and optional questions)
+- **Steps 2-3**: Multi-select buttons embedded in bot message bubbles
 - **Auto-scroll**: Always scrolls to latest message
 - **Auto-focus**: Input auto-focuses when appropriate
+- **Skip functionality**: Leave blank to skip optional questions
 
 ### 5. Loading States
 - Typing indicator (animated dots) while searching
