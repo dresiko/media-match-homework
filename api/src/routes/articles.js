@@ -47,10 +47,11 @@ router.get('/index', async (req, res) => {
 // GET /api/articles - List articles from S3
 router.get('/', async (req, res) => {
   try {
-    const articleIds = await s3VectorService.listArticles();
+    const { nextToken } = req.query;
+    const listArticles = await s3VectorService.listArticles({ nextToken });
     res.json({
-      count: articleIds.length,
-      articleIds: articleIds
+      count: listArticles.vectors.length,
+      response: listArticles
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

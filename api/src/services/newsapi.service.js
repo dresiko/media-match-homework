@@ -126,6 +126,7 @@ class GuardianAPIService {
         const description = this.extractDescription(article.fields.body);
 
         return {
+          id: article.id,
           title: article.webTitle,
           description: description,
           content: this.stripHtml(article.fields.body),

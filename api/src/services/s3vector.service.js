@@ -201,7 +201,7 @@ class S3VectorService {
    */
   async storeArticle(article, embedding) {
     try {
-      const articleId = uuidv4();
+      const articleId =  article.id;
       const key = `${this.index}/${articleId}.json`;
 
       const articleData = {
@@ -309,19 +309,20 @@ class S3VectorService {
    * List all articles in the index
    * @returns {Promise<Array<string>>} Array of article IDs
    */
-  async listArticles() {
+  async listArticles({ nextToken }) {
     try {
       const command = new ListVectorsCommand({
         vectorBucketName: this.bucket,
         indexName: this.index,
         returnMetadata: true,
+        nextToken
       });
 
       const response = await this.clientVector.send(command);
       if (!response.vectors || response.vectors.length === 0) {
         return [];
       }
-      return response.vectors;
+      return response;
     } catch (error) {
       console.error("Error listing articles from S3:", error.message);
       throw error;
