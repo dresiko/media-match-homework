@@ -22,7 +22,7 @@ AWS_SECRET_ACCESS_KEY=aws_secret_access_key
 S3_VECTOR_BUCKET=media-matching-articles
 S3_VECTOR_INDEX=articles-index
 OPENAI_API_KEY=sk-proj-your-key
-NEWS_API_KEY=your_newsapi_key
+GUARDIAN_API_KEY=your_newsapi_key
 ```
 
 ### 2. Start the Application

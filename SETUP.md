@@ -26,7 +26,7 @@
    OPENAI_API_KEY=sk-your-actual-key
    
    # NewsAPI (optional)
-   NEWS_API_KEY=your_newsapi_key
+   GUARDIAN_API_KEY=your_newsapi_key
    ```
 
 ## Running the Application

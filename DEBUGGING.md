@@ -80,7 +80,7 @@ console.log('Config:', {
   bucket: config.aws.s3.vectorBucket,
   region: config.aws.region,
   hasOpenAI: !!config.openaiApiKey,
-  hasNewsAPI: !!config.newsApiKey
+  hasGuardianAPI: !!config.guardianApiKey
 });
 ```
 

@@ -52,8 +52,8 @@ S3_VECTOR_INDEX=articles-index
 # OpenAI
 OPENAI_API_KEY=sk-your-key
 
-# NewsAPI (optional)
-NEWS_API_KEY=your_newsapi_key
+# NewsAPI (optional for ingesting)
+GUARDIAN_API_KEY=your_newsapi_key
 ```
 
 ### 3. Use anywhere

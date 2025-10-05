@@ -33,13 +33,29 @@ A media matching system that helps PR professionals and founders quickly researc
 
 1. **Clone the repository**
    ```bash
-   cd /Users/avarkriss/Projects/honey-jar-media-matching-homework
+   git clone <repository-url>
+   cd honey-jar-media-matching-homework
    ```
 
 2. **Configure environment variables**
+   
+   Create a `.env` file in the project root:
    ```bash
    cp .env.template .env
    # Edit .env with your AWS credentials and API keys
+
+   # AWS Configuration
+   AWS_REGION=us-east-1
+   AWS_ACCESS_KEY_ID=your_access_key
+   AWS_SECRET_ACCESS_KEY=your_secret_key
+   S3_VECTOR_BUCKET=your-bucket-name
+   S3_VECTOR_ARTICLES_INDEX=articles-index
+   
+   # OpenAI
+   OPENAI_API_KEY=sk-your-key
+   
+   # NewsAPI (optional)
+   GUARDIAN_API_KEY=your_newsapi_key
    ```
 
 3. **Start the application**
@@ -185,7 +201,7 @@ yarn build         # Build for production
 | `S3_VECTOR_BUCKET` | S3 bucket name for vectors | Yes |
 | `S3_VECTOR_ARTICLES_INDEX` | S3 vector index name | Yes |
 | `OPENAI_API_KEY` | OpenAI API key for embeddings | Yes |
-| `NEWS_API_KEY` | NewsAPI key for ingestion | No |
+| `GUARDIAN_API_KEY` | The Guardian API key for ingestion | No |
 
 ### API Endpoints
 

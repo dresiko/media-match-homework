@@ -18,7 +18,6 @@ module.exports = {
   },
   
   // API Keys
-  newsApiKey: process.env.NEWS_API_KEY,
   guardianApiKey: process.env.GUARDIAN_API_KEY,
   openaiApiKey: process.env.OPENAI_API_KEY,
   
