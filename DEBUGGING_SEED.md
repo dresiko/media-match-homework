@@ -110,7 +110,7 @@ make logs-api
 
 ### Debug Guardian API Fetch
 
-Set breakpoint in `api/src/services/newsapi.service.js`:
+Set breakpoint in `api/src/services/newsapi.service.js` (Guardian API service):
 - Line 61: Before API call
 - Line 64: After response
 - Line 97: In normalizeArticles

@@ -4,7 +4,7 @@
 
 1. **AWS S3 Vector Bucket** - Create a bucket with vector search enabled
 2. **OpenAI API Key** - Get from https://platform.openai.com/api-keys
-3. **NewsAPI Key** (optional) - Get from https://newsapi.org/
+3. **Guardian API Key** (optional) - Get from https://open-platform.theguardian.com/access/
 
 ## Environment Setup
 
@@ -25,8 +25,8 @@
    # OpenAI
    OPENAI_API_KEY=sk-your-actual-key
    
-   # NewsAPI (optional)
-   GUARDIAN_API_KEY=your_newsapi_key
+   # Guardian API (optional)
+   GUARDIAN_API_KEY=your_guardian_api_key
    ```
 
 ## Running the Application
@@ -139,12 +139,12 @@ If embeddings fail:
 - Check you have sufficient credits
 - The system will fall back to mock embeddings if key is missing
 
-### NewsAPI Error
+### Guardian API Error
 
 If article fetching fails:
 - The system will automatically use mock articles
-- Verify your NewsAPI key if you want real articles
-- Free tier has limits (100 requests/day)
+- Verify your Guardian API key if you want real articles
+- Free tier has limits on requests per day
 
 ## Next Steps
 
@@ -161,7 +161,7 @@ api/
 ├── src/
 │   ├── config/           # Configuration
 │   ├── services/         # Business logic
-│   │   ├── newsapi.service.js
+│   │   ├── newsapi.service.js       # Guardian API integration
 │   │   ├── embeddings.service.js
 │   │   └── s3vector.service.js
 │   ├── routes/           # API routes

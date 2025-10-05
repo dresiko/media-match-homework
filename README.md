@@ -27,7 +27,7 @@ A media matching system that helps PR professionals and founders quickly researc
 - Docker & Docker Compose
 - AWS Account with S3 access
 - Yarn (for local development) - `npm install -g yarn`
-- (Optional) NewsAPI or Guardian API key for article ingestion
+- (Optional) Guardian API key for article ingestion
 
 ### Setup
 
@@ -54,8 +54,8 @@ A media matching system that helps PR professionals and founders quickly researc
    # OpenAI
    OPENAI_API_KEY=sk-your-key
    
-   # NewsAPI (optional)
-   GUARDIAN_API_KEY=your_newsapi_key
+   # Guardian API (optional)
+   GUARDIAN_API_KEY=your_guardian_api_key
    ```
 
 3. **Start the application**
@@ -163,7 +163,7 @@ yarn build         # Build for production
 │   │   │   ├── openai.service.js        # Embeddings & justifications
 │   │   │   ├── s3vector.service.js      # Vector storage
 │   │   │   ├── query.service.js         # Query preparation
-│   │   │   ├── newsapi.service.js       # Article ingestion
+│   │   │   ├── newsapi.service.js       # Article ingestion (Guardian API)
 │   │   │   └── reporters-contact.service.js  # Contact database
 │   │   ├── config/        # Configuration
 │   │   └── scripts/       # Seed & init scripts

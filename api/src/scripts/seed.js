@@ -12,8 +12,8 @@ async function seed() {
     // Step 0: Initialize S3 Vector storage (create bucket and index if needed)
     await s3VectorService.initialize();
 
-    // Step 1: Fetch articles from NewsAPI
-    console.log('\n📰 Step 1: Fetching articles from NewsAPI...');
+    // Step 1: Fetch articles from Guardian API
+    console.log('\n📰 Step 1: Fetching articles from The Guardian API...');
     const articles = await newsApiService.fetchArticles({
       pageSize: config.ingestion.defaultPageSize,
       pages: config.ingestion.defaultPages,

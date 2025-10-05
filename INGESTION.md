@@ -4,17 +4,17 @@ This document explains how the article ingestion and vectorization process works
 
 ## Overview
 
-The system fetches articles from NewsAPI, generates embeddings using OpenAI, and stores them in AWS S3 Vectors for semantic search.
+The system fetches articles from The Guardian API, generates embeddings using OpenAI, and stores them in AWS S3 Vectors for semantic search.
 
 ## Architecture
 
 ```
-NewsAPI → Fetch Articles → Generate Embeddings (OpenAI) → Store in S3 Vectors
+Guardian API → Fetch Articles → Generate Embeddings (OpenAI) → Store in S3 Vectors
 ```
 
 ### Components
 
-1. **NewsAPI Service** (`newsapi.service.js`)
+1. **Guardian API Service** (`newsapi.service.js`)
    - Fetches recent articles from news sources
    - Normalizes article data (author names, source names)
    - Falls back to mock data if API key not configured
@@ -64,7 +64,7 @@ npm run seed
 ```
 
 This will:
-1. Fetch up to 50 articles from NewsAPI
+1. Fetch up to 50 articles from The Guardian API
 2. Generate embeddings for each article
 3. Store them in S3 with their vectors
 
@@ -157,7 +157,7 @@ If API keys are not configured, the system falls back to mock data for testing:
 
 - **OpenAI**: Using `text-embedding-3-small` for cost efficiency
 - **S3**: Standard storage class for vector data
-- **NewsAPI**: Free tier provides 100 requests/day
+- **Guardian API**: Free tier has daily rate limits
 
 ## Future Enhancements
 

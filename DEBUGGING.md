@@ -55,7 +55,7 @@ npm run seed
 
 Set breakpoints in:
 - `api/src/services/newsapi.service.js` line 30 (`fetchArticles` method)
-- Check the `response.data` to see what NewsAPI returns
+- Check the `response.data` to see what The Guardian API returns
 
 ### Debug Embedding Generation
 
@@ -87,7 +87,7 @@ console.log('Config:', {
 ### 2. Mock Data for Testing
 
 If you don't have API keys, the services will automatically use mock data:
-- NewsAPI → `getMockArticles()`
+- Guardian API → `getMockArticles()`
 - OpenAI → `getMockEmbedding()`
 
 ### 3. Error Handling

@@ -36,7 +36,7 @@ Complete implementation of the Honeyjar Media Matching homework assignment.
 Node.js + Express
 ├── AWS S3 Vectors (semantic search)
 ├── OpenAI API (embeddings + justifications)
-├── NewsAPI + Guardian API (article ingestion)
+├── The Guardian API (article ingestion)
 └── Custom contact database (38 reporters)
 ```
 
@@ -162,7 +162,7 @@ All 15 justifications generated simultaneously using `Promise.all()`:
 - ✅ Manual URL support (via seed script)
 
 **Available but not required:**
-- NewsAPI (can be enabled)
+- The Guardian API (can be enabled)
 - RSS feeds (infrastructure ready)
 
 ### Vector Storage
@@ -243,7 +243,7 @@ media-matching-homework/
 │   │   │   ├── openai.service.js        # NEW: Renamed from embeddings
 │   │   │   ├── s3vector.service.js      # Vector storage
 │   │   │   ├── query.service.js         # Query prep
-│   │   │   ├── newsapi.service.js       # Article fetching
+│   │   │   ├── newsapi.service.js       # Article fetching (Guardian API)
 │   │   │   └── reporters-contact.service.js  # NEW: Contact DB
 │   │   ├── scripts/
 │   │   │   └── seed.js          # Article ingestion

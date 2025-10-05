@@ -22,7 +22,7 @@ AWS_SECRET_ACCESS_KEY=aws_secret_access_key
 S3_VECTOR_BUCKET=media-matching-articles
 S3_VECTOR_INDEX=articles-index
 OPENAI_API_KEY=sk-proj-your-key
-GUARDIAN_API_KEY=your_newsapi_key
+GUARDIAN_API_KEY=your_guardian_api_key
 ```
 
 ### 2. Start the Application
@@ -55,7 +55,7 @@ make seed
 ```
 
 This will:
-- Fetch 50 articles from NewsAPI
+- Fetch 50 articles from The Guardian API
 - Generate embeddings with OpenAI
 - Store in S3 Vectors
 
@@ -67,7 +67,7 @@ Expected output:
 ✓ Vector bucket 'media-matching-articles' already exists
 ✓ Vector index 'articles-index' already exists
 
-📰 Step 1: Fetching articles from NewsAPI...
+📰 Step 1: Fetching articles from The Guardian API...
 ✓ Fetched 50 articles
 
 🤖 Step 2: Generating embeddings with OpenAI...
