@@ -45,12 +45,12 @@ class QueryService {
 
     // Target publications
     if (targetPublications) {
-      parts.push(`Specific publications to focus on: ${targetPublications}`);
+      parts.push(`Target publications: ${targetPublications}`);
     }
 
     // Competitor/related announcements context
     if (competitors) {
-      parts.push(`Competitors or other announcements: ${competitors}`);
+      parts.push(`Related to: ${competitors}`);
     }
 
     return parts.join(', ');
