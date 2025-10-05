@@ -67,23 +67,13 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-// GET /api/articles/:id - Get specific article
-router.get('/:id', async (req, res) => {
-  try {
-    const article = await s3VectorService.getArticle(req.params.id);
-    res.json(article);
-  } catch (error) {
-    res.status(404).json({ error: 'Article not found' });
-  }
-});
-
 // POST /api/articles/ingest - Ingest new articles
 router.post('/ingest', async (req, res) => {
   try {
-    const { pageSize = 50, query } = req.body;
+    const { pageSize = 100, pages = 1, fromPage = 1, daysBack = 90, query } = req.body;
     
     // Fetch articles
-    const articles = await newsApiService.fetchArticles({ pageSize, query });
+    const articles = await newsApiService.fetchArticles({ pageSize, pages, fromPage, daysBack, query });
     
     if (articles.length === 0) {
       return res.json({
@@ -107,6 +97,17 @@ router.post('/ingest', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// GET /api/articles/:id - Get specific article
+router.get('/:id', async (req, res) => {
+  try {
+    const article = await s3VectorService.getArticle(req.params.id);
+    res.json(article);
+  } catch (error) {
+    res.status(404).json({ error: 'Article not found' });
+  }
+});
+
 
 module.exports = router;
 
