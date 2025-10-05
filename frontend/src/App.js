@@ -141,7 +141,7 @@ function App() {
     
     // Move to next step
     setTimeout(() => {
-      addMessage('bot', 'Got it! Are there any competitors or other announcements I should consider when running your search?');
+      addMessage('bot', 'Got it! Are there any competitors or other announcements I should consider when running your search? (You can skip this by leaving it blank)');
       setCurrentStep(5);
     }, 500);
   };
