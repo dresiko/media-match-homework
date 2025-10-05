@@ -5,8 +5,12 @@ const s3VectorService = require('../services/s3vector.service');
 const config = require('../config');
 
 async function seed() {
-  const args = process.argv.slice(2); 
   console.log('🌱 Starting article ingestion and vectorization...\n');
+  console.log(`Parameters:`)
+  console.log(`  - fetch from ${config.ingestion.defaultDaysBack} days ago`);
+  console.log(`  - size of page: ${config.ingestion.defaultPageSize}`);
+  console.log(`  - number of pages: ${config.ingestion.defaultPages}`);
+  console.log(`  - starting from page: ${config.ingestion.defaultFromPage}`);
 
   try {
     // Step 0: Initialize S3 Vector storage (create bucket and index if needed)

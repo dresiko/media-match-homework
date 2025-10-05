@@ -115,7 +115,7 @@ class S3VectorService {
             vectorBucketName: this.bucket,
             indexName: this.index,
             dataType: "float32",
-            dimension: config.openai.embeddingDimensions, // 768 for text-embedding-3-small
+            dimension: config.openai.embeddingDimensions, // 1536 for text-embedding-3-small
             distanceMetric: "cosine",
             indexType: "HNSW", // Hierarchical Navigable Small World - best for semantic search
           });

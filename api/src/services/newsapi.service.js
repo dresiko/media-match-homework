@@ -71,7 +71,7 @@ class GuardianAPIService {
 
         // Small delay between pages to respect rate limits
         if (page < pages) {
-          await this.sleep(1000);
+          await this.sleep(100);
         }
       }
 

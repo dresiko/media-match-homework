@@ -23,8 +23,8 @@ module.exports = {
   
   // OpenAI Configuration
   openai: {
-    embeddingModel: 'text-embedding-3-small',
-    embeddingDimensions: 768
+    embeddingModel: process.env.OPENAI_EMBEDDING_MODEL || 'text-embedding-3-small',
+    embeddingDimensions: parseInt(process.env.OPENAI_EMBEDDING_DIMENSIONS || '1536', 10)
   },
   
   // Article Ingestion Configuration (Guardian API)
