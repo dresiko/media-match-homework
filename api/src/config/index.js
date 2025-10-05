@@ -32,7 +32,7 @@ module.exports = {
     defaultPageSize: parseInt(process.env.INGESTION_PAGE_SIZE || '100', 10), // Guardian API max
     defaultDaysBack: parseInt(process.env.INGESTION_DAYS_BACK || '90', 10), // Fetch articles from last X days
     defaultPages: parseInt(process.env.INGESTION_PAGES || '5', 10), // Number of pages to fetch
-    defaultFromPage: parseInt(process.env.INGESTION_FROM_PAGE || '6', 10), // Page to start fetching from
+    defaultFromPage: parseInt(process.env.INGESTION_FROM_PAGE || '1', 10), // Page to start fetching from
     sections: [
       'technology',
       'business',
