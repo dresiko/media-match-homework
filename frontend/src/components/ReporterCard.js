@@ -4,8 +4,8 @@ function ReporterCard({ reporter }) {
   const [expanded, setExpanded] = useState(false);
 
   const getScoreColor = (score) => {
-    if (score >= 40) return '#10b981'; // Green
-    if (score >= 30) return '#f59e0b'; // Yellow/Orange
+    if (score >= 50) return '#10b981'; // Green
+    if (score >= 40) return '#f59e0b'; // Yellow/Orange
     return '#ef4444'; // Red
   };
 
