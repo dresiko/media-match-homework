@@ -5,7 +5,7 @@ A media matching system that helps PR professionals and founders quickly researc
 ## 🎯 Features
 
 - **Chat-First Interface**: Interactive bot-driven conversation with message history and embedded controls
-- **Smart Reporter Matching**: Semantic search using Amazon S3 Vectors to find relevant journalists ([see flow diagram](./REPORTER_MATCHING_FLOW.md))
+- **Smart Reporter Matching**: Semantic search using Amazon S3 Vectors with weighted scoring that rewards both quality and consistency ([see flow](./REPORTER_MATCHING_FLOW.md) | [see scoring](./MATCH_SCORING.md))
 - **AI-Powered Justifications**: GPT-4o-mini generates unique explanations for each match (with progressive loading)
 - **Fast Results**: ~1 second initial response with skeleton loaders for AI justifications
 - **Contact Enrichment**: 38 reporters with verified email, LinkedIn, and Twitter
@@ -189,6 +189,7 @@ yarn build         # Build for production
 ├── Makefile
 ├── README.md
 ├── REPORTER_MATCHING_FLOW.md  # Detailed flow diagram
+├── MATCH_SCORING.md       # Scoring algorithm explained
 ├── TESTING.md             # Test guide
 └── IMPLEMENTATION_SUMMARY.md  # Complete summary
 ```

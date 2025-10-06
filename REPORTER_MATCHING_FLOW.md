@@ -150,9 +150,15 @@ The query embedding is sent to AWS S3 Vectors, which:
 The system processes the similar articles to identify unique reporters:
 - Groups articles by `author + outlet` combination
 - Tracks all relevant articles for each reporter
-- Records the best (lowest) distance score for each reporter
-- Sorts reporters by their best match score
+- **Calculates additive match score**:
+  - Base score from best matching article
+  - +10% of each additional article's score as bonus
+  - Capped at 100 (perfect match)
+  - Simple: quality first, then bonuses for volume
+- Sorts reporters by their calculated score
 - Takes the top 15 reporters
+
+See [MATCH_SCORING.md](./MATCH_SCORING.md) for detailed scoring algorithm.
 
 ### Step 6: Enrich Contacts
 For each reporter, the system looks up contact information from the contact database:

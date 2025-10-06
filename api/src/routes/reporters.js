@@ -127,6 +127,49 @@ router.post("/justifications", async (req, res) => {
 });
 
 /**
+ * Calculate additive match score for a reporter
+ * Base score from best article + 10% bonus from each additional article
+ */
+function calculateReporterScore(reporter) {
+  if (reporter.relevantArticles.length === 0) {
+    return { finalDistance: 1.0, matchScore: 0 };
+  }
+
+  // Sort articles by distance (best matches first)
+  const sortedArticles = reporter.relevantArticles.sort((a, b) => a.distance - b.distance);
+  
+  // Best article = base score
+  const bestDistance = sortedArticles[0].distance;
+  const baseScore = (1 - bestDistance) * 100;
+
+  // Single article - use its score
+  if (sortedArticles.length === 1) {
+    return {
+      finalDistance: bestDistance,
+      matchScore: Math.round(baseScore)
+    };
+  }
+
+  // Additional articles contribute 10% of their score as bonus
+  let bonus = 0;
+  const BONUS_PERCENTAGE = 0.10; // 10% of each additional article's score
+  
+  for (let i = 1; i < sortedArticles.length; i++) {
+    const articleScore = (1 - sortedArticles[i].distance) * 100;
+    bonus += articleScore * BONUS_PERCENTAGE;
+  }
+
+  // Final score (capped at 100)
+  const finalScore = Math.min(100, Math.round(baseScore + bonus));
+  const finalDistance = 1 - (finalScore / 100);
+
+  return {
+    finalDistance,
+    matchScore: finalScore
+  };
+}
+
+/**
  * Extract unique reporters from articles and rank them
  * @param {boolean} generateJustifications - Whether to generate AI justifications (slow) or use placeholders (fast)
  */
@@ -181,9 +224,18 @@ async function extractReportersFromArticles(articles, limit, storyBrief, generat
     );
   });
 
-  // Convert to array and sort by lowest distance
-  const sortedReporters = Array.from(reporterMap.values())
-    .sort((a, b) => a.lowestDistance - b.lowestDistance)
+  // Calculate weighted scores for each reporter and sort
+  const reportersWithScores = Array.from(reporterMap.values()).map(reporter => {
+    const score = calculateReporterScore(reporter);
+    return {
+      ...reporter,
+      finalDistance: score.finalDistance,
+      calculatedMatchScore: score.matchScore
+    };
+  });
+
+  const sortedReporters = reportersWithScores
+    .sort((a, b) => a.finalDistance - b.finalDistance)
     .slice(0, limit);
 
   // If justifications not requested, return immediately with placeholders
@@ -197,7 +249,7 @@ async function extractReportersFromArticles(articles, limit, storyBrief, generat
         rank: index + 1,
         name: reporter.name,
         outlet: reporter.outlet,
-        matchScore: Math.round((1 - reporter.lowestDistance) * 100),
+        matchScore: reporter.calculatedMatchScore,
         justification: null, // Placeholder - will be loaded separately
         recentArticles,
         totalRelevantArticles: reporter.totalRecentArticles,
@@ -232,7 +284,7 @@ async function extractReportersFromArticles(articles, limit, storyBrief, generat
         rank: index + 1,
         name: reporter.name,
         outlet: reporter.outlet,
-        matchScore: Math.round((1 - reporter.lowestDistance) * 100),
+        matchScore: reporter.calculatedMatchScore,
         justification,
         recentArticles,
         totalRelevantArticles: reporter.totalRecentArticles,
