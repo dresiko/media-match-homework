@@ -150,13 +150,13 @@ function calculateReporterScore(reporter) {
     };
   }
 
-  // Additional articles contribute 10% of their score as bonus
+  // Additional top 2 and 3 articles contribute 10% of their score as bonus
   let bonus = 0;
   const BONUS_PERCENTAGE = 0.10; // 10% of each additional article's score
   
-  for (let i = 1; i < sortedArticles.length; i++) {
+  for (let i = 1; i < sortedArticles.slice(0, 2).length; i++) {
     const articleScore = (1 - sortedArticles[i].distance) * 100;
-    bonus += articleScore * BONUS_PERCENTAGE;
+    bonus += articleScore * articleScore / 1000;
   }
 
   // Final score (capped at 100)
