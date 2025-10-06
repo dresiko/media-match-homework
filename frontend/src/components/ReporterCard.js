@@ -3,6 +3,12 @@ import React, { useState } from 'react';
 function ReporterCard({ reporter }) {
   const [expanded, setExpanded] = useState(false);
 
+  const getScoreColor = (score) => {
+    if (score >= 40) return '#10b981'; // Green
+    if (score >= 30) return '#f59e0b'; // Yellow/Orange
+    return '#ef4444'; // Red
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -27,9 +33,9 @@ function ReporterCard({ reporter }) {
         </div>
         <div className="reporter-score">
           <div className="score-circle" style={{
-            background: `conic-gradient(#f59e0b ${reporter.matchScore * 3.6}deg, #e5e7eb ${reporter.matchScore * 3.6}deg)`
+            background: `conic-gradient(${getScoreColor(reporter.matchScore)} ${reporter.matchScore * 3.6}deg, #e5e7eb ${reporter.matchScore * 3.6}deg)`
           }}>
-            <span>{reporter.matchScore}%</span>
+            <span style={{ color: getScoreColor(reporter.matchScore) }}>{reporter.matchScore}%</span>
           </div>
         </div>
       </div>
@@ -79,8 +85,12 @@ function ReporterCard({ reporter }) {
 
         {expanded && (
           <div className="articles-list">
-            {reporter.recentArticles.map((article, idx) => (
-              <div key={idx} className="article-item">
+            {reporter.recentArticles.map((article, idx) => {
+              const articleScore = Math.round((1 - article.distance) * 100);
+              return (
+              <div key={idx} className="article-item" style={{
+                borderLeftColor: getScoreColor(articleScore)
+              }}>
                 <div className="article-header">
                   <a href={article.url} target="_blank" rel="noopener noreferrer" className="article-title">
                     {article.title}
@@ -88,12 +98,26 @@ function ReporterCard({ reporter }) {
                   <span className="article-date">{formatDate(article.publishedAt)}</span>
                 </div>
                 {article.distance !== undefined && (
-                  <span className="article-relevance">
+                  <span className="article-relevance" style={{
+                    background: (() => {
+                      const score = Math.round((1 - article.distance) * 100);
+                      if (score >= 40) return '#d1fae5';
+                      if (score >= 30) return '#fef3c7';
+                      return '#fee2e2';
+                    })(),
+                    color: (() => {
+                      const score = Math.round((1 - article.distance) * 100);
+                      if (score >= 40) return '#065f46';
+                      if (score >= 30) return '#92400e';
+                      return '#991b1b';
+                    })()
+                  }}>
                     Relevance: {Math.round((1 - article.distance) * 100)}%
                   </span>
                 )}
               </div>
-            ))}
+              );
+            })}
             {reporter.totalRelevantArticles > reporter.recentArticles.length && (
               <p className="articles-more">
                 + {reporter.totalRelevantArticles - reporter.recentArticles.length} more article{reporter.totalRelevantArticles - reporter.recentArticles.length !== 1 ? 's' : ''}
