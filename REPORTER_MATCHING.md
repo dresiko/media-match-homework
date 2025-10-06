@@ -52,11 +52,11 @@ Geographic focus: US"
 
 ### Step 3: Generate Query Embedding
 
-The query text is converted to a 768-dimensional vector using OpenAI's `text-embedding-3-small`:
+The query text is converted to a 1536-dimensional vector using OpenAI's `text-embedding-3-small`:
 
 ```javascript
 const queryEmbedding = await embeddingsService.generateEmbeddings(queryText);
-// Returns: [0.123, -0.456, 0.789, ...] (768 numbers)
+// Returns: [0.123, -0.456, 0.789, ...] (1536 numbers)
 ```
 
 This embedding captures the **semantic meaning** of the story.
