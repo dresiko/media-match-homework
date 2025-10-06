@@ -8,10 +8,10 @@ A media matching system that helps PR professionals and founders quickly researc
 - **Smart Reporter Matching**: Semantic search using Amazon S3 Vectors with weighted scoring that rewards both quality and consistency ([see flow](./REPORTER_MATCHING_FLOW.md))
 - **AI-Powered Justifications**: GPT-4o-mini generates unique explanations for each match (with progressive loading)
 - **Fast Results**: ~1 second initial response with skeleton loaders for AI justifications
-- **Contact Enrichment**: 38 reporters with verified email, LinkedIn, and Twitter
+- **Contact Enrichment**: reporters contact info api with mocked data including email, LinkedIn, and Twitter
 - **Multi-Select Buttons**: Pill-style buttons embedded in chat bubbles for outlet and geography selection
 - **CSV Export & Email Copy**: One-click exports for immediate outreach
-- **Recent Articles**: See 2-3 most relevant articles per reporter with relevance scores
+- **Recent Articles**: See most relevant articles per reporter with relevance scores (capped on top 3)
 
 ## 🏗️ Architecture
 
@@ -19,7 +19,7 @@ A media matching system that helps PR professionals and founders quickly researc
 - **Frontend**: React-based chat interface (managed with Yarn)
 - **Vector Storage**: Amazon S3 Vectors for semantic search
 - **Embeddings**: OpenAI text-embedding-3-small for article vectorization
-- **Package Manager**: Yarn (faster, more reliable than npm)
+- **Package Manager**: Yarn
 
 ## 🚀 Quick Start
 
@@ -27,8 +27,9 @@ A media matching system that helps PR professionals and founders quickly researc
 
 - Docker & Docker Compose
 - AWS Account with S3 access
+- OpenAI API Key
 - Yarn (for local development) - `npm install -g yarn`
-- (Optional) Guardian API key for article ingestion
+- Guardian API key for article ingestion
 
 ### Setup
 
@@ -40,10 +41,12 @@ A media matching system that helps PR professionals and founders quickly researc
 
 2. **Configure environment variables**
    
-   Create a `.env` file in the project root:
    ```bash
    cp .env.template .env
-   # Edit .env with your AWS credentials and API keys
+   ```
+
+   ```bash
+   # Edit .env with your credentials and API keys
 
    # AWS Configuration
    AWS_REGION=us-east-1
