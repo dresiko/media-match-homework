@@ -40,7 +40,7 @@ function App() {
   
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const [inputValue, setInputValue] = useState('');
   
   const chatEndRef = useRef(null);
