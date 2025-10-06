@@ -7,7 +7,7 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "init": "node src/scripts/init-storage.js",
-    "seed": "node src/scripts/seed.js",
+    "ingest": "node src/scripts/ingest.js",
     "debug": "node --inspect src/index.js"
   },
   "keywords": [

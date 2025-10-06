@@ -14,7 +14,7 @@ async function initializeStorage() {
     console.log(`   Index Created: ${result.indexCreated ? 'Yes' : 'No (already existed)'}`);
 
     console.log('\n✅ Storage initialization completed successfully!');
-    console.log('\nYou can now run the seed script to ingest articles.');
+    console.log('\nYou can now run the ingest script to ingest articles.');
   } catch (error) {
     console.error('\n❌ Error during initialization:', error.message);
     console.error(error.stack);

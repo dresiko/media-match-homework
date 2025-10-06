@@ -45,7 +45,12 @@ A media matching system that helps PR professionals and founders quickly researc
    cp .env.template .env
    ```
 
-   Edit these with your AWS account credentiales, OpenAI and The Guardian API Keys and parameters for the ingestion of news
+   Edit the .env file and set:
+   - AWS Account credentials
+   - AWS Vectorial Bucket and index setup
+   - OpenAI API Key
+   - The Guardian API Keys
+   - Ingestion parameters
 
    ```bash   
    # AWS ACCOUNT
@@ -82,12 +87,12 @@ A media matching system that helps PR professionals and founders quickly researc
    - API: http://localhost:3001
    - Health check: http://localhost:3001/health
 
-### Seed Data
+### Ingest Data
 
 Load sample articles into the system:
 ```bash
-make seed
-# or locally: cd api && yarn seed
+make ingest
+# or locally: cd api && yarn ingest
 ```
 
 ## 📝 Usage
@@ -141,7 +146,7 @@ make up            # Start containers (detached)
 make down          # Stop containers
 make clean         # Remove containers and volumes
 make init          # Initialize S3 storage
-make seed          # Seed sample data (uses Yarn)
+make ingest        # Ingest sample data (uses Yarn)
 make logs          # View all logs
 make logs-api      # View API logs
 make shell-api     # Open shell in API container
@@ -152,8 +157,7 @@ make shell-api     # Open shell in API container
 cd api
 yarn install       # Install dependencies
 yarn dev           # Start API server
-yarn seed          # Seed articles
-yarn seed:debug    # Debug seed script
+yarn ingest        # Ingest articles
 
 cd frontend
 yarn install       # Install dependencies

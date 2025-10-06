@@ -4,7 +4,7 @@ const openaiService = require('../services/openai.service');
 const s3VectorService = require('../services/s3vector.service');
 const config = require('../config');
 
-async function seed() {
+async function ingest() {
   console.log('🌱 Starting article ingestion and vectorization...\n');
   console.log(`Parameters:`)
   console.log(`  - fetch from ${config.ingestion.defaultDaysBack} days ago`);
@@ -71,6 +71,6 @@ async function seed() {
   }
 }
 console.log('🌱 Starting article ingestion and vectorization...\n');
-// Run the seed function
-seed();
+// Run the ingest function
+ingest();
 

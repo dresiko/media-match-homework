@@ -1,5 +1,3 @@
-.PHONY: help dev build up down clean init seed logs
-
 help: ## Show this help message
 	@echo 'Usage: make [target]'
 	@echo ''
@@ -25,8 +23,8 @@ clean: ## Stop containers and remove volumes
 init: ## Initialize S3 Vector storage (bucket and index)
 	docker-compose exec api yarn init
 
-seed: ## Seed the database with sample articles
-	docker-compose exec api yarn seed
+ingest: ## Ingest the database with sample articles
+	docker-compose exec api yarn ingest
 
 logs: ## Show logs from all containers
 	docker-compose logs -f
