@@ -27,9 +27,9 @@ function ReporterCard({ reporter }) {
         </div>
         <div className="reporter-score">
           <div className="score-circle" style={{
-            background: `conic-gradient(#4f46e5 ${reporter.matchScore * 3.6}deg, #e5e7eb ${reporter.matchScore * 3.6}deg)`
+            background: `conic-gradient(#f59e0b ${reporter.matchScore * 3.6}deg, #e5e7eb ${reporter.matchScore * 3.6}deg)`
           }}>
-            <span>{reporter.matchScore}</span>
+            <span>{reporter.matchScore}%</span>
           </div>
         </div>
       </div>
