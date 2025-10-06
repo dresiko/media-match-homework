@@ -6,7 +6,8 @@ A media matching system that helps PR professionals and founders quickly researc
 
 - **Chat-First Interface**: Interactive bot-driven conversation with message history and embedded controls
 - **Smart Reporter Matching**: Semantic search using Amazon S3 Vectors to find relevant journalists ([see flow diagram](./REPORTER_MATCHING_FLOW.md))
-- **AI-Powered Justifications**: GPT-4o-mini generates unique explanations for each match
+- **AI-Powered Justifications**: GPT-4o-mini generates unique explanations for each match (with progressive loading)
+- **Fast Results**: ~1 second initial response with skeleton loaders for AI justifications
 - **Contact Enrichment**: 38 reporters with verified email, LinkedIn, and Twitter
 - **Multi-Select Buttons**: Pill-style buttons embedded in chat bubbles for outlet and geography selection
 - **CSV Export & Email Copy**: One-click exports for immediate outreach
@@ -209,9 +210,12 @@ yarn build         # Build for production
 ### API Endpoints
 
 **Reporter Matching**
-- `POST /api/reporters/match` - Find top reporters for a story brief
+- `POST /api/reporters/match` - Find top reporters for a story brief (fast ~1s response)
   - Body: `{ storyBrief, outletTypes[], geography[], targetPublications?, competitors?, limit }`
-  - Returns: Top 15 reporters with justifications, contact info, and articles
+  - Returns: Top 15 reporters with contact info and articles (justifications as `null`)
+- `POST /api/reporters/justifications` - Generate AI justifications for reporters (background)
+  - Body: `{ storyBrief, reporters[] }`
+  - Returns: Array of justifications keyed by reporter name/outlet
 - `GET /api/reporters/contact?name=` - Get contact info by reporter name
 - `GET /api/reporters/search?q=` - Search reporters by name
 - `GET /api/reporters/all` - List all reporters with contact info

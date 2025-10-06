@@ -45,9 +45,9 @@ router.post("/match", async (req, res) => {
     const similarArticles = await s3VectorService.searchSimilar(queryEmbedding);
     console.log(`✓ Found ${similarArticles.length} similar articles`);
 
-    // Step 4: Extract and rank reporters
-    const reporters = await extractReportersFromArticles(similarArticles, limit, storyBrief);
-    console.log(`✓ Extracted ${reporters.length} unique reporters with AI justifications`);
+    // Step 4: Extract and rank reporters (without justifications for faster response)
+    const reporters = await extractReportersFromArticles(similarArticles, limit, storyBrief, false);
+    console.log(`✓ Extracted ${reporters.length} unique reporters`);
 
     // Step 5: Extract key topics for explainability
     const keyTopics = queryService.extractKeyTopics(storyBrief);
@@ -69,10 +69,68 @@ router.post("/match", async (req, res) => {
   }
 });
 
+// POST /api/reporters/justifications - Generate AI justifications for reporters
+router.post("/justifications", async (req, res) => {
+  try {
+    const { storyBrief, reporters } = req.body;
+
+    // Validate required fields
+    if (!storyBrief || !reporters || !Array.isArray(reporters)) {
+      return res.status(400).json({
+        error: "Story brief and reporters array are required",
+      });
+    }
+
+    console.log(`🤖 Generating AI justifications for ${reporters.length} reporters...`);
+
+    // Generate justifications in parallel
+    const justifications = await Promise.all(
+      reporters.map(async (reporter) => {
+        try {
+          const justification = await openaiService.generateReporterJustification({
+            storyBrief,
+            reporter: {
+              name: reporter.name,
+              outlet: reporter.outlet,
+              articleCount: reporter.totalRelevantArticles
+            },
+            recentArticles: reporter.recentArticles.slice(0, 3)
+          });
+
+          return {
+            name: reporter.name,
+            outlet: reporter.outlet,
+            justification,
+          };
+        } catch (error) {
+          console.error(`Failed to generate justification for ${reporter.name}:`, error.message);
+          return {
+            name: reporter.name,
+            outlet: reporter.outlet,
+            justification: "Unable to generate justification at this time.",
+            error: true
+          };
+        }
+      })
+    );
+
+    console.log(`✓ Generated ${justifications.length} justifications`);
+
+    res.json({
+      justifications,
+      count: justifications.length
+    });
+  } catch (error) {
+    console.error("Error generating justifications:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 /**
  * Extract unique reporters from articles and rank them
+ * @param {boolean} generateJustifications - Whether to generate AI justifications (slow) or use placeholders (fast)
  */
-async function extractReportersFromArticles(articles, limit, storyBrief) {
+async function extractReportersFromArticles(articles, limit, storyBrief, generateJustifications = true) {
   const reporterMap = new Map();
 
   articles.forEach((article) => {
@@ -127,6 +185,28 @@ async function extractReportersFromArticles(articles, limit, storyBrief) {
   const sortedReporters = Array.from(reporterMap.values())
     .sort((a, b) => a.lowestDistance - b.lowestDistance)
     .slice(0, limit);
+
+  // If justifications not requested, return immediately with placeholders
+  if (!generateJustifications) {
+    return sortedReporters.map((reporter, index) => {
+      const recentArticles = reporter.relevantArticles
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 3);
+
+      return {
+        rank: index + 1,
+        name: reporter.name,
+        outlet: reporter.outlet,
+        matchScore: Math.round((1 - reporter.lowestDistance) * 100),
+        justification: null, // Placeholder - will be loaded separately
+        recentArticles,
+        totalRelevantArticles: reporter.totalRecentArticles,
+        email: reporter.email || null,
+        linkedin: reporter.linkedin || null,
+        twitter: reporter.twitter || null
+      };
+    });
+  }
 
   // Generate AI justifications for each reporter (parallel execution)
   console.log(`🤖 Generating AI justifications for ${sortedReporters.length} reporters...`);

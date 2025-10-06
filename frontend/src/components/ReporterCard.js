@@ -35,7 +35,15 @@ function ReporterCard({ reporter }) {
       </div>
 
       <div className="reporter-justification">
-        <p>{reporter.justification}</p>
+        {reporter.justification === null ? (
+          <div className="justification-skeleton">
+            <div className="skeleton-line skeleton-line-1"></div>
+            <div className="skeleton-line skeleton-line-2"></div>
+            <div className="skeleton-line skeleton-line-3"></div>
+          </div>
+        ) : (
+          <p>{reporter.justification}</p>
+        )}
       </div>
 
       <div className="reporter-contact">

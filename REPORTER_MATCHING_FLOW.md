@@ -197,14 +197,22 @@ Including the most relevant 3 articles provides:
 
 ## Performance Characteristics
 
-**Typical Response Times:**
+**Initial Response (Fast):**
 - Query preparation: < 10ms
 - Embedding generation: 200-500ms
 - S3 Vector search: 100-300ms
 - Reporter extraction: < 50ms
 - Contact enrichment: < 10ms
+- **Initial Results: ~1 second** ✨
+
+**Background Justification Loading:**
 - Justification generation (parallel): 2-3s
-- **Total: ~3-4 seconds**
+- **Total with justifications: ~3-4 seconds**
+
+**User Experience:**
+- Users see results in ~1 second
+- AI justifications stream in progressively with skeleton loaders
+- Perceived performance: Much faster!
 
 **API Costs per Query:**
 - OpenAI embedding: $0.00002 (1 query)

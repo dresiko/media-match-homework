@@ -169,6 +169,7 @@ function App() {
     setCurrentStep(6); // Loading step
 
     try {
+      // Step 1: Get reporters quickly (without justifications)
       const response = await axios.post(`${API_URL}/api/reporters/match`, {
         storyBrief: formData.storyBrief,
         outletTypes: formData.outletTypes,
@@ -178,11 +179,16 @@ function App() {
         limit: 15
       });
 
+      // Show results immediately with placeholder justifications
       setResults(response.data);
       setTimeout(() => {
         addMessage('bot', `✅ Found ${response.data.reporters.length} perfect matches for you!`);
         setCurrentStep(7); // Results view
       }, 1000);
+
+      // Step 2: Fetch AI justifications in the background
+      fetchJustifications(formData.storyBrief, response.data.reporters);
+
     } catch (err) {
       console.error('Error fetching reporters:', err);
       setError(err.response?.data?.error || 'Failed to fetch reporters. Please try again.');
@@ -190,6 +196,45 @@ function App() {
       setCurrentStep(1);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchJustifications = async (storyBrief, reporters) => {
+    try {
+      console.log('🤖 Fetching AI justifications...');
+      console.log("storyBrief", storyBrief)
+      console.log("reporters", reporters)
+      
+      const response = await axios.post(`${API_URL}/api/reporters/justifications`, {
+        storyBrief,
+        reporters
+      });
+
+      // Update results with justifications
+      setResults(prevResults => {
+        if (!prevResults) return prevResults;
+
+        const updatedReporters = prevResults.reporters.map(reporter => {
+          const justificationData = response.data.justifications.find(
+            j => j.name === reporter.name && j.outlet === reporter.outlet
+          );
+          
+          return {
+            ...reporter,
+            justification: justificationData?.justification || reporter.justification
+          };
+        });
+
+        return {
+          ...prevResults,
+          reporters: updatedReporters
+        };
+      });
+
+      console.log('✅ Justifications loaded');
+    } catch (err) {
+      console.error('Error fetching justifications:', err);
+      // Don't show error to user - justifications are nice-to-have
     }
   };
 
