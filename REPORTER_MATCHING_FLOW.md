@@ -59,12 +59,12 @@ The reporter matching system uses a multi-step process that combines semantic se
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  5. EXTRACT REPORTERS (reporters.js)                           │
+│  5. EXTRACT REPORTERS (reporters.js)                            │
 │  ─────────────────────────────────────────────────────────────  │
-│  • Group articles by author + outlet                           │
-│  • Track each reporter's relevant articles                     │
-│  • Calculate best match score per reporter                     │
-│  • Sort by lowest distance (highest relevance)                 │
+│  • Group articles by author + outlet                            │
+│  • Track each reporter's relevant articles                      │
+│  • Calculate additive score: best + small % from top 2 & 3      │
+│  • Sort by calculated score (highest first)                     │
 │  • Take top 15 reporters                                        │
 └──────────────────────┬──────────────────────────────────────────┘
                        │
@@ -79,17 +79,7 @@ The reporter matching system uses a multi-step process that combines semantic se
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  7. GENERATE JUSTIFICATIONS (openai.service.js)                │
-│  ─────────────────────────────────────────────────────────────  │
-│  • For each of 15 reporters (parallel execution)               │
-│  • Send story brief + reporter's top 3 articles to GPT-4o-mini │
-│  • Generate unique 2-3 sentence explanation                    │
-│  • Calculate match score: (1 - distance) × 100                 │
-└──────────────────────┬──────────────────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  8. RESPONSE                                                    │
+│  7. INITIAL RESPONSE (Fast ~1 second)                          │
 │  ─────────────────────────────────────────────────────────────  │
 │  {                                                              │
 │    reporters: [                                                 │
@@ -97,8 +87,7 @@ The reporter matching system uses a multi-step process that combines semantic se
 │        rank: 1,                                                 │
 │        name: "John Smith",                                      │
 │        outlet: "TechCrunch",                                    │
-│        matchScore: 87,                                          │
-│        justification: "John extensively covers...",             │
+│        matchScore: 87,                                          │     │
 │        recentArticles: [...],                                   │
 │        email: "john@techcrunch.com",                            │
 │        linkedin: "...",                                         │
@@ -108,6 +97,18 @@ The reporter matching system uses a multi-step process that combines semantic se
 │    ],                                                           │
 │    totalArticlesAnalyzed: 52                                    │
 │  }                                                              │
+└──────────────────────┬──────────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  8. BACKGROUND: GENERATE JUSTIFICATIONS (openai.service.js)    │
+│  ─────────────────────────────────────────────────────────────  │
+│  • Frontend calls /api/reporters/justifications                │
+│  • For each of 15 reporters (parallel execution)               │
+│  • Send story brief + reporter's top 3 articles to GPT-4o-mini │
+│  • Generate unique 2-3 sentence explanation                    │
+│  • Frontend updates UI progressively with skeleton loaders     │
+│  • Total time: ~2-3 seconds after initial response             │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -168,18 +169,23 @@ For each reporter, the system looks up contact information from the contact data
 
 Currently, 38 reporters have verified contact information. Others receive `null` for missing fields.
 
-### Step 7: Generate Justifications
-This is where AI adds significant value. For each of the top 15 reporters:
-- The system sends the original story brief plus the reporter's top 3 most relevant articles to GPT-4o-mini
-- The AI generates a unique, contextual explanation of why this reporter is a good fit
-- All 15 justifications are generated in parallel for speed
-- A match score (0-100) is calculated from the distance: `(1 - distance) × 100`
-
-### Step 8: Response
-The API returns a complete response with:
+### Step 7: Initial Response (Fast)
+The API immediately returns results with:
 - Array of 15 ranked reporters with all details
+- Justifications set to `null` (placeholder)
 - Total number of articles analyzed
 - The original query parameters for reference
+- **Response time: ~1 second** ✨
+
+### Step 8: Background Justification Generation
+After the initial response, the frontend automatically fetches AI justifications:
+- Calls `POST /api/reporters/justifications` with story brief and reporters
+- For each of the top 15 reporters, GPT-4o-mini generates a unique explanation
+- All 15 justifications are generated in parallel for speed
+- The frontend displays skeleton loaders and updates progressively
+- **Additional time: ~2-3 seconds**
+
+This progressive loading approach provides instant results with AI enhancements streaming in, dramatically improving perceived performance.
 
 ## Key Technical Decisions
 
@@ -192,8 +198,15 @@ Unlike traditional search systems that filter by outlet type or geography, this 
 ### Why Repeat the Story Brief?
 Repeating the story brief in the query text increases its weight in the embedding, ensuring the core story remains the primary matching criterion over secondary factors like geography or outlet type.
 
+### Why Progressive Justification Loading?
+Originally, generating 15 AI justifications blocked the entire response for 3-4 seconds. By separating this into two phases:
+1. **Initial response (~1s)**: Users see reporters immediately with all data except justifications
+2. **Background loading (~2-3s)**: AI justifications load with skeleton loaders
+
+This provides a **3-4x better perceived performance** - users can start reviewing reporters, copying emails, and reading articles while justifications load in the background.
+
 ### Why Parallel Justifications?
-Generating 15 AI justifications sequentially would take 10-15 seconds. Running them in parallel (using `Promise.all`) reduces total time to 2-3 seconds, providing a much better user experience.
+Within the background loading phase, generating 15 justifications sequentially would take 10-15 seconds. Running them in parallel (using `Promise.all`) reduces this to 2-3 seconds.
 
 ### Why Top 3 Articles Per Reporter?
 Including the most relevant 3 articles provides:
@@ -226,8 +239,24 @@ Including the most relevant 3 articles provides:
 - S3 Vector search: < $0.001
 - **Total: < $0.001 per query**
 
+## Visual Features
+
+### Traffic Light Scoring
+Match scores and article relevance use intuitive color coding:
+- **Green** (≥50%): Excellent match - high relevance
+- **Orange** (40-49%): Good match - solid relevance  
+- **Red** (<40%): Lower match - may need review
+
+This color system is applied to:
+- Match score progress circles
+- Article relevance badges
+- Article left border indicators
+
+The visual feedback helps users quickly identify the strongest matches at a glance.
+
 ## Related Documentation
 
+- [MATCH_SCORING.md](./MATCH_SCORING.md) - Detailed scoring algorithm explanation
 - [REPORTER_MATCHING.md](./REPORTER_MATCHING.md) - Detailed explanation of the matching algorithm
 - [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) - Complete system implementation
 - [README.md](./README.md) - Quick start and overview
