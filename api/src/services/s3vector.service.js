@@ -309,7 +309,7 @@ class S3VectorService {
    * List all articles in the index
    * @returns {Promise<Array<string>>} Array of article IDs
    */
-  async listArticles({ nextToken }) {
+  async listArticles({ nextToken } = {}) {
     try {
       const command = new ListVectorsCommand({
         vectorBucketName: this.bucket,

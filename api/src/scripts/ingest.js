@@ -51,7 +51,7 @@ async function ingest() {
     console.log('\n📝 Sample of stored articles:');
     results.slice(0, 5).forEach((result, index) => {
       console.log(`   ${index + 1}. ${result.title}`);
-      console.log(`      Author: ${result.author} | Source: ${result.source}`);
+      console.log(`      Author: ${result.author} | Source: ${result.source.name}`);
       console.log(`      ID: ${result.id}\n`);
     });
 
