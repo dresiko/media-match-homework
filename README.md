@@ -48,18 +48,29 @@ A media matching system that helps PR professionals and founders quickly researc
    ```bash
    # Edit .env with your credentials and API keys
 
-   # AWS Configuration
-   AWS_REGION=us-east-1
-   AWS_ACCESS_KEY_ID=your_access_key
-   AWS_SECRET_ACCESS_KEY=your_secret_key
-   S3_VECTOR_BUCKET=your-bucket-name
-   S3_VECTOR_ARTICLES_INDEX=articles-index
-   
-   # OpenAI
-   OPENAI_API_KEY=sk-your-key
-   
-   # Guardian API (optional)
-   GUARDIAN_API_KEY=your_guardian_api_key
+   # AWS
+   AWS_ACCESS_KEY_ID=aws_access_key_id
+   AWS_SECRET_ACCESS_KEY=aws_secret_access_key
+
+   # VECTORIAL BUCKET
+   AWS_REGION=us-east-2
+   S3_VECTOR_BUCKET=media-matching-articles
+   S3_VECTOR_INDEX=articles-index
+
+
+   # OPEN AI
+   OPENAI_API_KEY=openai_api_key
+
+   # NEWS API FOR INGESTION
+   GUARDIAN_API_KEY=guardian_api_key
+
+   # Edit ingestion for the news ingestion
+
+   # ARTICLE INGESTION PARAMS
+   INGESTION_DAYS_BACK=120
+   INGESTION_PAGE_SIZE=100
+   INGESTION_FROM_PAGE=1
+   INGESTION_PAGES=5
    ```
 
 3. **Start the application**
