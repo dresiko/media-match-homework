@@ -1,6 +1,29 @@
 const axios = require("axios");
 const config = require("../config");
 
+const DEFAULT_QUERY_TERMS = [
+  "technology",
+  "startup",
+  "business",
+  "innovation",
+  "robotics",
+  "metallurgical",
+  "silicon",
+  "mortgage",
+  "fintech",
+  "climate",
+  "compliance",
+  "battery",
+  "fundraising",
+  "automation",
+  "cloud",
+  "restaurant",
+  "amazon",
+  "AWS",
+  "AWS Cloud",
+  "AWS Cloud Services"
+];
+
 class GuardianAPIService {
   constructor() {
     this.apiKey = config.guardianApiKey;
@@ -26,7 +49,7 @@ class GuardianAPIService {
 
     try {
       const {
-        query = "technology OR startup OR business OR innovation",
+        query = DEFAULT_QUERY_TERMS.join(" OR "),
         pageSize = 200, // Guardian max is 200
         pages = 1, // Number of pages to fetch
         fromDate = this.getDateDaysAgo(config.ingestion.defaultDaysBack),
