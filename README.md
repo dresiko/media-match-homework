@@ -45,26 +45,23 @@ A media matching system that helps PR professionals and founders quickly researc
    cp .env.template .env
    ```
 
-   ```bash
-   # Edit .env with your credentials and API keys
+   Edit these with your AWS account credentiales, OpenAI and The Guardian API Keys and parameters for the ingestion of news
 
-   # AWS
+   ```bash   
+   # AWS ACCOUNT
    AWS_ACCESS_KEY_ID=aws_access_key_id
    AWS_SECRET_ACCESS_KEY=aws_secret_access_key
 
-   # VECTORIAL BUCKET
+   # VECTORIAL BUCKET AND INDEX
    AWS_REGION=us-east-2
    S3_VECTOR_BUCKET=media-matching-articles
    S3_VECTOR_INDEX=articles-index
 
-
    # OPEN AI
    OPENAI_API_KEY=openai_api_key
 
-   # NEWS API FOR INGESTION
+   # THE GUARDIAN API FOR INGESTION
    GUARDIAN_API_KEY=guardian_api_key
-
-   # Edit ingestion for the news ingestion
 
    # ARTICLE INGESTION PARAMS
    INGESTION_DAYS_BACK=120
