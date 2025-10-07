@@ -92,7 +92,8 @@ router.post("/justifications", async (req, res) => {
             reporter: {
               name: reporter.name,
               outlet: reporter.outlet,
-              articleCount: reporter.totalRelevantArticles
+              articleCount: reporter.totalRelevantArticles,
+              matchScore: reporter.matchScore
             },
             recentArticles: reporter.recentArticles.slice(0, 3)
           });
@@ -275,7 +276,8 @@ async function extractReportersFromArticles(articles, limit, storyBrief, generat
         reporter: {
           name: reporter.name,
           outlet: reporter.outlet,
-          articleCount: reporter.totalRecentArticles
+          articleCount: reporter.totalRecentArticles,
+          matchScore: reporter.matchScore
         },
         recentArticles
       });

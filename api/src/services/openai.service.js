@@ -1,5 +1,5 @@
-const OpenAI = require('openai');
-const config = require('../config');
+const OpenAI = require("openai");
+const config = require("../config");
 
 /**
  * OpenAI Service
@@ -9,10 +9,10 @@ class OpenAIService {
   constructor() {
     if (config.openaiApiKey) {
       this.openai = new OpenAI({
-        apiKey: config.openaiApiKey
+        apiKey: config.openaiApiKey,
       });
     } else {
-      console.warn('OPENAI_API_KEY not configured');
+      console.warn("OPENAI_API_KEY not configured");
     }
     this.model = config.openai.embeddingModel;
     this.dimensions = config.openai.embeddingDimensions;
@@ -25,24 +25,24 @@ class OpenAIService {
    */
   async generateEmbeddings(text) {
     if (!this.openai) {
-      console.warn('OpenAI not configured, using mock embeddings');
+      console.warn("OpenAI not configured, using mock embeddings");
       return this.getMockEmbedding(text);
     }
 
     try {
       const input = Array.isArray(text) ? text : [text];
-      
+
       console.log(`Generating embeddings for ${input.length} text(s)...`);
-      
+
       const response = await this.openai.embeddings.create({
         model: this.model,
         input: input,
-        dimensions: this.dimensions
+        dimensions: this.dimensions,
       });
 
-      return response.data.map(item => item.embedding);
+      return response.data.map((item) => item.embedding);
     } catch (error) {
-      console.error('Error generating embeddings:', error.message);
+      console.error("Error generating embeddings:", error.message);
       throw error;
     }
   }
@@ -65,7 +65,7 @@ class OpenAIService {
    */
   prepareArticleText(article) {
     const parts = [];
-    
+
     if (article.author) {
       parts.push("Author: " + article.author);
     }
@@ -75,7 +75,7 @@ class OpenAIService {
       parts.push("Title: " + article.title);
       parts.push(article.title);
     }
-    
+
     // Description
     if (article.description) {
       parts.push("Description: " + article.description);
@@ -85,37 +85,38 @@ class OpenAIService {
       parts.push("SourceId: " + article.source.id);
       parts.push("SourceName: " + article.source.name);
     }
-    
+
     // Content (truncate if too long)
     if (article.content) {
       const maxContentLength = 20000;
-      const content = article.content.length > maxContentLength
-        ? article.content.substring(0, maxContentLength) + '...'
-        : article.content;
+      const content =
+        article.content.length > maxContentLength
+          ? article.content.substring(0, maxContentLength) + "..."
+          : article.content;
       parts.push("Content: " + content);
     }
 
-    if(article.contributorBio) {
+    if (article.contributorBio) {
       parts.push("ContributorBio: " + article.contributorBio);
     }
 
-    if(article.contributorTwitter) {
+    if (article.contributorTwitter) {
       parts.push("ContributorTwitter: " + article.contributorTwitter);
     }
 
-    if(article.publishedAt) {
+    if (article.publishedAt) {
       parts.push("PublishedAt: " + article.publishedAt);
     }
 
-    if(article.url) {
+    if (article.url) {
       parts.push("Url: " + article.url);
     }
 
-    if(article.urlToImage) {
+    if (article.urlToImage) {
       parts.push("UrlToImage: " + article.urlToImage);
     }
-    
-    return parts.join(' ');
+
+    return parts.join(" ");
   }
 
   /**
@@ -126,21 +127,25 @@ class OpenAIService {
    */
   async generateArticleEmbeddingsBatch(articles, batchSize = 10) {
     const embeddings = [];
-    
+
     for (let i = 0; i < articles.length; i += batchSize) {
       const batch = articles.slice(i, i + batchSize);
-      const texts = batch.map(article => this.prepareArticleText(article));
-      console.log(`Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(articles.length / batchSize)}...`);
-      
+      const texts = batch.map((article) => this.prepareArticleText(article));
+      console.log(
+        `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(
+          articles.length / batchSize
+        )}...`
+      );
+
       const batchEmbeddings = await this.generateEmbeddings(texts);
       embeddings.push(...batchEmbeddings);
-      
+
       // Small delay to respect rate limits
       if (i + batchSize < articles.length) {
         await this.sleep(100);
       }
     }
-    
+
     return embeddings;
   }
 
@@ -149,7 +154,7 @@ class OpenAIService {
    */
   cosineSimilarity(vecA, vecB) {
     if (vecA.length !== vecB.length) {
-      throw new Error('Vectors must have the same length');
+      throw new Error("Vectors must have the same length");
     }
 
     let dotProduct = 0;
@@ -169,7 +174,7 @@ class OpenAIService {
    * Sleep utility for rate limiting
    */
   sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -191,56 +196,69 @@ class OpenAIService {
    * @param {Array} params.recentArticles - Reporter's most relevant articles
    * @returns {Promise<string>} Justification text
    */
-  async generateReporterJustification({ storyBrief, reporter, recentArticles }) {
+  async generateReporterJustification({
+    storyBrief,
+    reporter,
+    recentArticles,
+  }) {
     if (!this.openai) {
-      console.warn('OpenAI not configured, using simple justification');
+      console.warn("OpenAI not configured, using simple justification");
       return this.generateSimpleJustification(reporter);
     }
 
     try {
       // Prepare articles context
-      const articlesContext = recentArticles.map((article, idx) => 
-        `${idx + 1}. "${article.title}" (${article.publishedAt})\n   ${article.description || 'No description'}`
-      ).join('\n\n');
+      const articlesContext = recentArticles
+        .map(
+          (article, idx) =>
+            `${idx + 1}. "${article.title}" (${article.publishedAt})\n   ${
+              article.description || "No description"
+            }`
+        )
+        .join("\n\n");
 
       const prompt = `You are analyzing why a journalist is a good match for a PR pitch.
 
-Story Brief: "${storyBrief}"
+      Story Brief: "${storyBrief}"
 
-Reporter: ${reporter.name}
-Outlet: ${reporter.outlet}
-Number of relevant articles: ${reporter.articleCount}
+      Reporter: ${reporter.name}
+      Outlet: ${reporter.outlet}
+      Number of relevant articles: ${reporter.articleCount}
 
-Recent Relevant Articles:
-${articlesContext}
+      Recent Relevant Articles:
+      ${articlesContext}
 
-Task: Write a concise, professional 1-2 sentence justification explaining why this reporter is a strong match for the story brief. Focus on:
-- Their coverage history and expertise
-- Relevance of their recent work
-- Timeliness of their coverage
-- Their outlet's reach
+      Match Score: ${reporter.matchScore} ${console.log(reporter.matchScore)}
+      Considerate the match in a scale of 1 to 60
 
-Keep it factual and specific. Do not use bullet points or special formatting.`;
+      Task: Write a concise, professional 1-2 sentence justification explaining why this reporter is a possible match (check match score considerations) for the story brief. Focus on:
+      - Their coverage history and expertise
+      - Relevance of their recent work
+      - Timeliness of their coverage
+      - Their outlet's reach
+
+      Keep it factual and specific. Do not use bullet points or special formatting.`;
 
       const response = await this.openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         messages: [
           {
-            role: 'system',
-            content: 'You are a PR expert analyzing reporter matches. Provide concise, professional justifications.'
+            role: "system",
+            content:
+              "You are a PR expert analyzing reporter matches. Provide concise, professional justifications.",
           },
           {
-            role: 'user',
-            content: prompt
-          }
+            role: "user",
+            content: prompt,
+          },
         ],
         temperature: 0.7,
-        max_tokens: 150
+        max_tokens: 150,
       });
 
       return response.choices[0].message.content.trim();
     } catch (error) {
-      console.error('Error generating justification:', error.message);
+      console.error("Error generating justification:", error.message);
       // Fall back to simple justification
       return this.generateSimpleJustification(reporter);
     }
@@ -261,8 +279,10 @@ Keep it factual and specific. Do not use bullet points or special formatting.`;
     const recentArticle = reporter.relevantArticles[0];
     if (recentArticle) {
       const publishDate = new Date(recentArticle.publishedAt);
-      const daysAgo = Math.floor((Date.now() - publishDate) / (1000 * 60 * 60 * 24));
-      
+      const daysAgo = Math.floor(
+        (Date.now() - publishDate) / (1000 * 60 * 60 * 24)
+      );
+
       if (daysAgo < 7) {
         points.push(`Published relevant coverage within the last week`);
       } else if (daysAgo < 30) {
@@ -272,7 +292,7 @@ Keep it factual and specific. Do not use bullet points or special formatting.`;
 
     points.push(`Covers for ${reporter.outlet}`);
 
-    return points.join('; ');
+    return points.join("; ");
   }
 }
 
