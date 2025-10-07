@@ -228,7 +228,7 @@ class OpenAIService {
       Recent Relevant Articles:
       ${articlesContext}
 
-      Match Score: ${reporter.matchScore} ${console.log(reporter.matchScore)}
+      Match Score: ${reporter.matchScore}
       Considerate the match in a scale of 1 to 60
 
       Task: Write a concise, professional 1-2 sentence justification explaining why this reporter is a possible match (check match score considerations) for the story brief. Focus on:
