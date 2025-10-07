@@ -100,14 +100,14 @@ make ingest
 1. Open http://localhost:3000 in your browser
 2. **Chat with the bot:**
    - 🤖 Bot asks: "What are you looking to pitch?"
-   - 👤 You type your story brief
+   - 👤 You type your story brief and angle
    - 🤖 Bot asks: "What outlet types?" (with multi-select buttons)
    - 👤 You select options and submit
    - 🤖 Bot asks: "What geography?" (with buttons)
    - 👤 You select and submit
    - 🤖 Bot asks: "Any specific publications?" (optional - leave blank to skip)
    - 👤 You type publications or leave blank
-   - 🤖 Bot asks: "Any competitors or announcements?" (optional)
+   - 🤖 Bot asks: "Any competitors or announcements?" (optional - leave blank to skip)
    - 👤 You add context or leave blank
    - 🤖 Bot searches and shows 15 matches!
 3. **View Results:** Top 15 reporters with:
