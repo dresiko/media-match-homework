@@ -119,48 +119,80 @@ make ingest
 
 ## 🧪 Test Briefs
 
-Try these sample briefs from the project requirements:
+Try these sample briefs from the project requirements. Each includes the angle within the story brief itself:
 
 ### A. Battery Startup - Materials Innovation
 
-**Story Brief:**
+**Step 1: Story Brief & Angle**
 ```
-We're a battery startup using domestically-sourced metallurgical silicon for breakthrough materials in EVs. Looking for coverage on our materials innovation, climate impact, and US supply chain advantage.
+We're a battery startup using domestically-sourced metallurgical silicon for breakthrough materials in EVs. Our angle focuses on materials innovation, climate/EV technology, and US supply chain advantages in the clean energy sector.
 ```
 
-**Suggested Filters:**
-- **Angle:** Materials breakthrough, climate/EV, US supply chain
-- **Outlet Types:** National tech/business + climate trades
-- **Geography:** US
+**Step 2: Outlet Types**
+- Select: `National Business/Tech`, `Trade/Specialist`
+
+**Step 3: Geography**
+- Select: `US`
+
+**Step 4: Target Publications** (optional)
+```
+Climate tech publications, EV-focused outlets
+```
+
+**Step 5: Competitors** (optional)
+```
+Traditional lithium battery manufacturers
+```
 
 ---
 
 ### B. Restaurant Robotics - $12M Seed Round
 
-**Story Brief:**
+**Step 1: Story Brief & Angle**
 ```
-Announcing our $12M Seed round for our restaurant robotics platform that's automating quick-serve operations and addressing labor challenges in the food service industry.
+Announcing our $12M Seed round for our restaurant robotics platform that's automating quick-serve operations and addressing labor challenges. Our angle emphasizes automation technology, workforce solutions, and fundraising momentum in the robotics space.
 ```
 
-**Suggested Filters:**
-- **Angle:** Automation, labor, quick-serve operations, fundraising
-- **Outlet Types:** National tech + robotics trades (avoid hype-only outlets)
-- **Geography:** US, with openness to global robotics press
+**Step 2: Outlet Types**
+- Select: `National Business/Tech`, `Trade/Specialist`
+
+**Step 3: Geography**
+- Select: `US`, `Global`
+
+**Step 4: Target Publications** (optional)
+```
+Robotics and automation trade press
+```
+
+**Step 5: Competitors** (optional)
+```
+Labor automation companies, restaurant tech funding announcements
+```
 
 ---
 
 ### C. Mortgage/Fintech + AWS Partnership
 
-**Story Brief:**
+**Step 1: Story Brief & Angle**
 ```
-We're partnering with AWS to power our mortgage platform, delivering infrastructure improvements in cost, latency, and compliance for the financial services industry.
+We're partnering with AWS to power our mortgage platform, delivering infrastructure improvements in cost, latency, and compliance for the financial services industry. Our angle highlights cloud infrastructure wins, operational efficiency, and regulatory compliance technology.
 ```
 
-**Suggested Filters:**
-- **Angle:** Infrastructure, cost/latency wins, compliance
-- **Outlet Types:** Fintech + cloud infrastructure reporters, business press
-- **Geography:** US
-- **Target Publications:** AWS partnership announcement angles
+**Step 2: Outlet Types**
+- Select: `National Business/Tech`, `Trade/Specialist`
+
+**Step 3: Geography**
+- Select: `US`
+
+**Step 4: Target Publications** (optional)
+```
+Fintech outlets, cloud infrastructure press, AWS partnership coverage
+```
+
+**Step 5: Competitors** (optional)
+```
+Other fintech-AWS partnerships, mortgage tech infrastructure announcements
+```
 
 ## 🛠️ Development Commands
 
