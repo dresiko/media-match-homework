@@ -160,10 +160,9 @@ async function fetchReporterHistory(reporter) {
 ```
 
 **Benefits:**
-- 10,000+ publications vs. current 1 (Guardian)
-- 2+ years of history vs. current 90 days
-- Better beat detection and expertise mapping
-- Improved match accuracy with larger dataset
+- **10,000+ news sources** (TechCrunch, WSJ, Bloomberg, Reuters, etc.) vs. current 1 (The Guardian only)
+- Better beat detection and expertise mapping across different outlets
+- Improved match accuracy with larger, more diverse dataset
 
 **Challenges:**
 - Cost: ~$50-100/month for API access + embedding costs
