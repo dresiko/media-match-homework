@@ -184,36 +184,117 @@ async function fetchReporterHistory(reporter) {
 
 ### Multi-Tenancy
 
-**Data Isolation Strategy:**
-```javascript
-// Tenant-specific vector indices
-S3 Vector Index: articles-{tenantId}
-Contact Data: contacts-{tenantId}
+**Tiered Access Model:**
 
-// Query scoping
-async function searchReporters(storyBrief, { tenantId, userId }) {
-  const index = `articles-${tenantId}`;
-  const results = await s3VectorService.search(index, queryEmbedding);
+Instead of isolating data per tenant, the system uses a **shared article database** with **plan-based access tiers**. This approach is ideal for a media matching product where all users benefit from the same comprehensive dataset.
+
+```javascript
+// Shared article database for ALL tenants
+S3 Vector Index: "articles" (100,000+ articles from 1000+ sources)
+
+// Tenant configuration with plan tiers
+const tenantPlans = {
+  free: {
+    searchesPerMonth: 10,
+    articleHistoryDays: 7,
+    maxReporters: 5,
+    contactEnrichment: false,
+    exportEnabled: false,
+    customSources: false
+  },
   
-  // Audit logging
+  regular: {
+    searchesPerMonth: 100,
+    articleHistoryDays: 30,
+    maxReporters: 10,
+    contactEnrichment: 'email-only',
+    exportEnabled: true,
+    customSources: false
+  },
+  
+  enterprise: {
+    searchesPerMonth: null,  // Unlimited
+    articleHistoryDays: 730,  // 2 years
+    maxReporters: 50,
+    contactEnrichment: 'full-rocketreach',
+    exportEnabled: true,
+    customSources: true,  // Can add private articles
+    apiAccess: true,
+    dedicatedSupport: true
+  }
+};
+
+// Plan-based search implementation
+async function searchReporters(storyBrief, { tenantId, userId }) {
+  const tenant = await getTenantConfig(tenantId);
+  const plan = tenantPlans[tenant.plan];
+  
+  // 1. Check usage limits
+  const usage = await getMonthlyUsage(tenantId);
+  if (plan.searchesPerMonth && usage.searches >= plan.searchesPerMonth) {
+    throw new Error('Monthly search limit reached. Upgrade for more searches.');
+  }
+  
+  // 2. Build plan-based filters
+  const filters = {};
+  
+  // Regular/Free: Limit to recent articles
+  if (plan.articleHistoryDays) {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - plan.articleHistoryDays);
+    filters.publishedAt = { greaterThan: cutoffDate };
+  }
+  
+  // Enterprise: Can search their custom articles too
+  if (plan.customSources) {
+    filters.$or = [
+      { visibility: 'public' },  // All shared articles
+      { uploadedBy: tenantId }   // Their custom articles
+    ];
+  } else {
+    filters.visibility = 'public';  // Only shared articles
+  }
+  
+  // 3. Search shared index with filters
+  const queryEmbedding = await generateEmbedding(storyBrief);
+  const results = await s3VectorService.search({
+    index: "articles",
+    embedding: queryEmbedding,
+    filters,
+    limit: plan.maxReporters * 3  // Extra for deduplication
+  });
+  
+  // 4. Extract and rank reporters
+  let reporters = extractReportersFromArticles(results, plan.maxReporters);
+  
+  // 5. Enterprise-only: Enrich with RocketReach
+  if (plan.contactEnrichment === 'full-rocketreach') {
+    reporters = await enrichWithRocketReach(reporters);
+  }
+  
+  // 6. Track usage and audit
+  await incrementUsage(tenantId, 'search');
   await auditLog.record({
     tenantId,
     userId,
     action: 'SEARCH_REPORTERS',
+    plan: tenant.plan,
     query: storyBrief,
-    resultCount: results.length,
+    resultCount: reporters.length,
     timestamp: new Date()
   });
   
-  return results;
+  return reporters;
 }
 ```
 
 **Benefits:**
-- Data isolation (regulatory compliance)
-- Per-tenant customization (custom contact databases, preferred outlets)
-- Independent scaling per tenant
-- Usage tracking and billing
+- **Shared dataset**: All users access the same comprehensive article database
+- **Plan-based features**: Different capabilities per subscription tier
+- **Scalable pricing**: Free → Regular → Enterprise progression
+- **Resource efficiency**: One database, filtered access (no duplicate storage)
+- **Enterprise customization**: Custom articles visible only to that tenant
+- **Usage tracking**: Per-tenant billing and quota management
 
 ### Role-Based Access Control (RBAC)
 
