@@ -8,7 +8,7 @@
 
 **Core Entities:**
 - **Article**: `{id, title, url, author, source, publishedAt, content, embedding[1536]}`
-- **Reporter** (derived): `{name, outlet, matchScore, recentArticles[], email, linkedin, twitter}`
+- **Reporter**: `{name, outlet, matchScore, recentArticles[], email, linkedin, twitter}`
 - **ContactInfo** (mock): 50 verified Guardian reporters covering all test scenarios
 
 **Storage:**
