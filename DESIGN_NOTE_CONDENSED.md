@@ -103,6 +103,31 @@ matchScore = min(baseScore + bonus, 100)
 - **Outlet tiers**: +5 tier 1 (WSJ, Bloomberg), +2 tier 2 (Guardian, Forbes)
 - **Result**: Prioritizes recent coverage and quality outlets, explainable breakdown for users
 
+### 5.4 Search History & Result Persistence
+**Problem:** Frontend sends full reporter payload to backend for justification generation (~50KB+ per request), no search history tracking.
+
+**Solution:** Persist search results in database (MongoDB or PostgreSQL):
+```
+SearchHistory {
+  id: uuid,
+  tenantId: string,
+  userId: string,
+  query: { storyBrief, filters, ... },
+  results: Reporter[],  // Full match results with scores
+  createdAt: timestamp,
+  justificationsGenerated: boolean
+}
+```
+
+**Benefits:**
+- **Reduced payload**: Frontend sends only `searchId` for justification generation (not full reporter data)
+- **Search history**: Users can revisit past searches without re-running queries
+- **Analytics**: Track popular queries, common filters, success patterns
+- **Caching**: Reuse results for similar queries (fuzzy matching)
+- **Audit trail**: Complete record of all searches with results
+
+**Implementation:** `POST /api/reporters/match` returns `searchId`, `POST /api/reporters/justifications` accepts `searchId` instead of full reporter array.
+
 ---
 
 ## 6. Performance & Scalability
