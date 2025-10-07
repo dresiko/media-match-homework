@@ -101,14 +101,14 @@ function ReporterCard({ reporter }) {
                   <span className="article-relevance" style={{
                     background: (() => {
                       const score = Math.round((1 - article.distance) * 100);
-                      if (score >= 40) return '#d1fae5';
-                      if (score >= 30) return '#fef3c7';
+                      if (score >= 50) return '#d1fae5';
+                      if (score >= 40) return '#fef3c7';
                       return '#fee2e2';
                     })(),
                     color: (() => {
                       const score = Math.round((1 - article.distance) * 100);
-                      if (score >= 40) return '#065f46';
-                      if (score >= 30) return '#92400e';
+                      if (score >= 50) return '#065f46';
+                      if (score >= 40) return '#92400e';
                       return '#991b1b';
                     })()
                   }}>
