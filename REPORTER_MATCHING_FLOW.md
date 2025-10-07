@@ -95,7 +95,7 @@ The reporter matching system uses a multi-step process that combines semantic se
 │      },                                                         │
 │      ...14 more                                                 │
 │    ],                                                           │
-│    totalArticlesAnalyzed: 52                                    │
+│    totalArticlesAnalyzed: 30                                    │
 │  }                                                              │
 └──────────────────────┬──────────────────────────────────────────┘
                        │
