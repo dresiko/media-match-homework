@@ -261,6 +261,7 @@ yarn build         # Build for production
 ├── docker-compose.yml
 ├── Makefile
 ├── README.md
+├── DESIGN_NOTE.md         # System design & enterprise roadmap
 ├── API.md                 # Complete API documentation
 ├── REPORTER_MATCHING_FLOW.md  # Detailed flow diagram
 ├── TESTING.md             # Test guide
@@ -291,6 +292,22 @@ See **[API.md](./API.md)** for complete API documentation with examples.
 - `GET /api/reporters/contact` - Get contact info by name
 - `POST /api/articles/ingest` - Ingest articles from Guardian API
 - `GET /health` - Health check
+
+## 📚 Documentation
+
+### System Design & Architecture
+- **[DESIGN_NOTE.md](./DESIGN_NOTE.md)** - Comprehensive design document covering:
+  - Data model and storage architecture
+  - Ranking formula with weights
+  - Commercial data integration (RocketReach, LexisNexis)
+  - Enterprise features (multi-tenancy, RBAC, auditability)
+  - Future improvements and scalability roadmap
+
+### API & Implementation
+- **[API.md](./API.md)** - Complete API reference with test cases
+- **[REPORTER_MATCHING_FLOW.md](./REPORTER_MATCHING_FLOW.md)** - Step-by-step matching flow
+- **[REPORTER_MATCHING.md](./REPORTER_MATCHING.md)** - Algorithm deep dive
+- **[TESTING.md](./TESTING.md)** - Testing guide
 
 ## 📄 License
 
