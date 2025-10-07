@@ -14,8 +14,8 @@ The reporter matching system uses a multi-step process that combines semantic se
 │  ─────────────────────────────────────────────────────────────  │
 │  POST /api/reporters/match                                      │
 │  {                                                              │
-│    storyBrief: "Battery startup using silicon for EVs...",     │
-│    outletTypes: ["national-business-tech"],                    │
+│    storyBrief: "Battery startup using silicon for EVs...",      │
+│    outletTypes: ["national-business-tech"],                     │
 │    geography: ["US"],                                           │
 │    targetPublications: "TechCrunch, WSJ",                       │
 │    competitors: "QuantumScape"                                  │
@@ -24,37 +24,37 @@ The reporter matching system uses a multi-step process that combines semantic se
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  2. QUERY PREPARATION (query.service.js)                       │
+│  2. QUERY PREPARATION (query.service.js)                        │
 │  ─────────────────────────────────────────────────────────────  │
-│  • Combine story brief with context                            │
-│  • Add outlet type keywords (technology, business, etc.)       │
+│  • Combine story brief with context                             │
+│  • Add outlet type keywords (technology, business, etc.)        │
 │  • Add geography context                                        │
-│  • Weight story brief (repeat for emphasis)                    │
+│  • Weight story brief (repeat for emphasis)                     │
 │                                                                 │
 │  Enhanced Query:                                                │
-│  "Battery startup silicon EVs... [repeated] technology         │
-│   business innovation, Geographic focus: US..."                │
+│  "Battery startup silicon EVs... [repeated] technology          │
+│   business innovation, Geographic focus: US..."                 │
 └──────────────────────┬──────────────────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  3. GENERATE EMBEDDING (openai.service.js)                     │
+│  3. GENERATE EMBEDDING (openai.service.js)                      │
 │  ─────────────────────────────────────────────────────────────  │
-│  • Call OpenAI text-embedding-3-small                          │
-│  • Convert query text → 1536-dim vector                        │
+│  • Call OpenAI text-embedding-3-small                           │
+│  • Convert query text → 1536-dim vector                         │
 │                                                                 │
-│  Result: [0.023, -0.041, 0.018, ..., 0.007]                    │
+│  Result: [0.023, -0.041, 0.018, ..., 0.007]                     │
 └──────────────────────┬──────────────────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  4. SEMANTIC SEARCH (s3vector.service.js)                      │
+│  4. SEMANTIC SEARCH (s3vector.service.js)                       │
 │  ─────────────────────────────────────────────────────────────  │
-│  • Query S3 Vector index with embedding                        │
-│  • Find top N most similar articles by cosine similarity       │
-│  • No hard filters - similarity handles relevance              │
+│  • Query S3 Vector index with embedding                         │
+│  • Find top N most similar articles by cosine similarity        │
+│  • No hard filters - similarity handles relevance               │
 │                                                                 │
-│  Returns: 50+ articles with distance scores                    │
+│  Returns: 50+ articles with distance scores                     │
 └──────────────────────┬──────────────────────────────────────────┘
                        │
                        ▼
@@ -63,23 +63,23 @@ The reporter matching system uses a multi-step process that combines semantic se
 │  ─────────────────────────────────────────────────────────────  │
 │  • Group articles by author + outlet                            │
 │  • Track each reporter's relevant articles                      │
-│  • Calculate additive score: best + small % from top 2 & 3      │
+│  • Calculate additive score: best + small % taken from top 2 & 3│
 │  • Sort by calculated score (highest first)                     │
 │  • Take top 15 reporters                                        │
 └──────────────────────┬──────────────────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  6. ENRICH CONTACTS (reporters-contact.service.js)             │
+│  6. ENRICH CONTACTS (reporters-contact.service.js)              │
 │  ─────────────────────────────────────────────────────────────  │
-│  • Look up email, LinkedIn, Twitter                            │
-│  • 38 reporters have verified contact info                     │
-│  • Others get null for missing fields                          │
+│  • Look up email, LinkedIn, Twitter                             │
+│  • 50 reporters have mocked contact info                        │
+│  • Others could get null for missing fields                     │
 └──────────────────────┬──────────────────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  7. INITIAL RESPONSE (Fast ~1 second)                          │
+│  7. INITIAL RESPONSE (Fast ~1 second)                           │
 │  ─────────────────────────────────────────────────────────────  │
 │  {                                                              │
 │    reporters: [                                                 │
@@ -101,14 +101,14 @@ The reporter matching system uses a multi-step process that combines semantic se
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  8. BACKGROUND: GENERATE JUSTIFICATIONS (openai.service.js)    │
+│  8. BACKGROUND: GENERATE JUSTIFICATIONS (openai.service.js)     │
 │  ─────────────────────────────────────────────────────────────  │
-│  • Frontend calls /api/reporters/justifications                │
-│  • For each of 15 reporters (parallel execution)               │
-│  • Send story brief + reporter's top 3 articles to GPT-4o-mini │
-│  • Generate unique 2-3 sentence explanation                    │
-│  • Frontend updates UI progressively with skeleton loaders     │
-│  • Total time: ~2-3 seconds after initial response             │
+│  • Frontend calls /api/reporters/justifications                 │
+│  • For each of 15 reporters (parallel execution)                |                    
+│  • Send story brief + reporter's top 3 articles to GPT-4o-mini  |      
+│  • Generate unique 2-3 sentence explanation                     │
+│  • Frontend updates UI progressively with skeleton loaders      │
+│  • Total time: ~2-3 seconds after initial response              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -159,15 +159,13 @@ The system processes the similar articles to identify unique reporters:
 - Sorts reporters by their calculated score
 - Takes the top 15 reporters
 
-See [MATCH_SCORING.md](./MATCH_SCORING.md) for detailed scoring algorithm.
-
 ### Step 6: Enrich Contacts
 For each reporter, the system looks up contact information from the contact database:
 - Email address
 - LinkedIn profile URL
 - Twitter handle
 
-Currently, 38 reporters have verified contact information. Others receive `null` for missing fields.
+Currently, 50 reporters have mocked contact information covering all three test case scenarios (Battery/EV/Climate, Robotics/AI, and Mortgage/Fintech). Others receive `null` for missing fields.
 
 ### Step 7: Initial Response (Fast)
 The API immediately returns results with:
@@ -256,7 +254,5 @@ The visual feedback helps users quickly identify the strongest matches at a glan
 
 ## Related Documentation
 
-- [MATCH_SCORING.md](./MATCH_SCORING.md) - Detailed scoring algorithm explanation
-- [REPORTER_MATCHING.md](./REPORTER_MATCHING.md) - Detailed explanation of the matching algorithm
-- [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) - Complete system implementation
+- [API.md](./API.md) - Complete API documentation with test cases
 - [README.md](./README.md) - Quick start and overview
