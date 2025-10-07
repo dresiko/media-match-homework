@@ -239,6 +239,78 @@ const REPORTERS_CONTACTS = {
     email: 'tobi.thomas@theguardian.com',
     linkedin: 'https://www.linkedin.com/in/tobitomas',
     twitter: '@tobithomas'
+  },
+  'jonathan-barrett': {
+    name: 'Jonathan Barrett',
+    email: 'jonathan.barrett@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/jonathanbarrett',
+    twitter: '@jonobarrett'
+  },
+  'petra-stock': {
+    name: 'Petra Stock',
+    email: 'petra.stock@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/petrastock',
+    twitter: '@petrastock'
+  },
+  'cecilia-nowell': {
+    name: 'Cecilia Nowell',
+    email: 'cecilia.nowell@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/cecilianowell',
+    twitter: '@cecilianowell'
+  },
+  'graham-readfearn': {
+    name: 'Graham Readfearn',
+    email: 'graham.readfearn@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/grahamreadfearn',
+    twitter: '@readfearn'
+  },
+  'finn-peacock': {
+    name: 'Finn Peacock',
+    email: 'finn.peacock@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/finnpeacock',
+    twitter: '@finnpeacock'
+  },
+  'roger-mcnamee': {
+    name: 'Roger McNamee',
+    email: 'roger.mcnamee@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/rogermcnamee',
+    twitter: '@moonalice'
+  },
+  'patrick-commins': {
+    name: 'Patrick Commins',
+    email: 'patrick.commins@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/patrickcommins',
+    twitter: '@patrickcommins'
+  },
+  'gene-marks': {
+    name: 'Gene Marks',
+    email: 'gene.marks@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/genemarks',
+    twitter: '@genemarks'
+  },
+  'dustin-guastella': {
+    name: 'Dustin Guastella',
+    email: 'dustin.guastella@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/dustinguastella',
+    twitter: '@dustinguastella'
+  },
+  'richard-partington': {
+    name: 'Richard Partington',
+    email: 'richard.partington@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/richardpartington',
+    twitter: '@RPartington'
+  },
+  'callum-jones': {
+    name: 'Callum Jones',
+    email: 'callum.jones@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/callumjones',
+    twitter: '@callumjones'
+  },
+  'hilary-osborne': {
+    name: 'Hilary Osborne',
+    email: 'hilary.osborne@theguardian.com',
+    linkedin: 'https://www.linkedin.com/in/hilaryosborne',
+    twitter: '@hilaryosborne'
   }
 };
 
