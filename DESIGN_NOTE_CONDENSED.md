@@ -121,12 +121,13 @@ SearchHistory {
 
 **Benefits:**
 - **Reduced payload**: Frontend sends only `searchId` for justification generation (not full reporter data)
-- **Search history**: Users can revisit past searches without re-running queries
+- **Search history**: Users can revisit, duplicate (as new search template), or delete past searches
+- **Iterative refinement**: Duplicate previous search → adjust story brief/filters → re-run with improvements
 - **Analytics**: Track popular queries, common filters, success patterns
 - **Caching**: Reuse results for similar queries (fuzzy matching)
 - **Audit trail**: Complete record of all searches with results
 
-**Implementation:** `POST /api/reporters/match` returns `searchId`, `POST /api/reporters/justifications` accepts `searchId` instead of full reporter array.
+**Implementation:** `POST /api/reporters/match` returns `searchId`, `POST /api/reporters/justifications` accepts `searchId` instead of full reporter array. Search history UI allows duplicate (pre-fills form with previous query) and delete actions.
 
 ---
 
