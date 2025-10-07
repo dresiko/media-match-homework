@@ -203,10 +203,10 @@ yarn build         # Build for production
 ├── docker-compose.yml
 ├── Makefile
 ├── README.md
+├── API.md                 # Complete API documentation
 ├── REPORTER_MATCHING_FLOW.md  # Detailed flow diagram
-├── MATCH_SCORING.md       # Scoring algorithm explained
 ├── TESTING.md             # Test guide
-└── IMPLEMENTATION_SUMMARY.md  # Complete summary
+└── REPORTER_MATCHING.md   # Matching algorithm details
 ```
 
 ## 🔧 Configuration
@@ -225,26 +225,14 @@ yarn build         # Build for production
 
 ### API Endpoints
 
-**Reporter Matching**
-- `POST /api/reporters/match` - Find top reporters for a story brief (fast ~1s response)
-  - Body: `{ storyBrief, outletTypes[], geography[], targetPublications?, competitors?, limit }`
-  - Returns: Top 15 reporters with contact info and articles (justifications as `null`)
-- `POST /api/reporters/justifications` - Generate AI justifications for reporters (background)
-  - Body: `{ storyBrief, reporters[] }`
-  - Returns: Array of justifications keyed by reporter name/outlet
-- `GET /api/reporters/contact?name=` - Get contact info by reporter name
-- `GET /api/reporters/search?q=` - Search reporters by name
-- `GET /api/reporters/all` - List all reporters with contact info
+See **[API.md](./API.md)** for complete API documentation with examples.
 
-**Articles**
-- `POST /api/articles/init` - Initialize S3 Vector storage
-- `GET /api/articles` - List all articles
-- `GET /api/articles/stats` - Get index statistics
-- `GET /api/articles/:id` - Get specific article
-- `POST /api/articles/ingest` - Ingest new articles
-
-**Health**
-- `GET /health` - API health check
+**Key Endpoints:**
+- `POST /api/reporters/match` - Match reporters to your story (~1s response)
+- `POST /api/reporters/justifications` - Generate AI explanations (background)
+- `GET /api/reporters/contact` - Get contact info by name
+- `POST /api/articles/ingest` - Ingest articles from Guardian API
+- `GET /health` - Health check
 
 ## 📄 License
 
