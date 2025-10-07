@@ -230,6 +230,12 @@ class OpenAIService {
 
       Match Score: ${reporter.matchScore}
       Considerate the match in a scale of 1 to 60
+      Having 60 as a perfect match
+      Having 50 as a strong match
+      Having 40 as a good match
+      Having 30 as a medium match
+      Having 20 as a weak match
+      Having 10 as a very weak match
 
       Task: Write a concise, professional 1-2 sentence justification explaining why this reporter is a possible match (check match score considerations) for the story brief. Focus on:
       - Their coverage history and expertise
