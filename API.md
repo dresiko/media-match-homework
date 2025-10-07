@@ -560,15 +560,22 @@ These test cases demonstrate the system's ability to match reporters across diff
 
 **Scenario:** Battery startup using domestically-sourced metallurgical silicon
 
-**Request:**
+**How to Use in Chat Interface:**
+1. **Story Brief:** "We're a battery startup using domestically-sourced metallurgical silicon for breakthrough materials in EVs. Our angle focuses on materials innovation, climate/EV technology, and US supply chain advantages in the clean energy sector."
+2. **Outlet Types:** Select `National Business/Tech` and `Trade/Specialist`
+3. **Geography:** Select `US`
+4. **Target Publications:** "Climate tech publications, EV-focused outlets"
+5. **Competitors:** "Traditional lithium battery manufacturers"
+
+**API Request:**
 ```bash
 curl -X POST http://localhost:3001/api/reporters/match \
   -H "Content-Type: application/json" \
   -d '{
-    "storyBrief": "We are a battery startup using domestically-sourced metallurgical silicon for breakthrough materials in EVs. Looking for coverage on our materials innovation, climate impact, and US supply chain advantage.",
+    "storyBrief": "We are a battery startup using domestically-sourced metallurgical silicon for breakthrough materials in EVs. Our angle focuses on materials innovation, climate/EV technology, and US supply chain advantages in the clean energy sector.",
     "outletTypes": ["national-business-tech", "trade-specialist"],
     "geography": ["US"],
-    "targetPublications": "Climate tech and EV-focused outlets",
+    "targetPublications": "Climate tech publications, EV-focused outlets",
     "competitors": "Traditional lithium battery manufacturers",
     "limit": 15
   }'
@@ -580,22 +587,34 @@ curl -X POST http://localhost:3001/api/reporters/match \
 - Trade publications covering battery technology
 - US-focused coverage
 
+**Key Success Factors:**
+- Angle is embedded in the story brief
+- Semantic search picks up keywords: "materials innovation," "climate," "supply chain"
+- Outlet type filters guide toward national tech and specialist publications
+
 ---
 
 ### Test Case B: Restaurant Robotics - $12M Seed Round
 
 **Scenario:** Restaurant robotics platform announcing funding
 
-**Request:**
+**How to Use in Chat Interface:**
+1. **Story Brief:** "Announcing our $12M Seed round for our restaurant robotics platform that's automating quick-serve operations and addressing labor challenges. Our angle emphasizes automation technology, workforce solutions, and fundraising momentum in the robotics space."
+2. **Outlet Types:** Select `National Business/Tech` and `Trade/Specialist`
+3. **Geography:** Select `US` and `Global`
+4. **Target Publications:** "Robotics and automation trade press"
+5. **Competitors:** "Labor automation companies, restaurant tech funding announcements"
+
+**API Request:**
 ```bash
 curl -X POST http://localhost:3001/api/reporters/match \
   -H "Content-Type: application/json" \
   -d '{
-    "storyBrief": "Announcing our $12M Seed round for our restaurant robotics platform that is automating quick-serve operations and addressing labor challenges in the food service industry.",
+    "storyBrief": "Announcing our $12M Seed round for our restaurant robotics platform that is automating quick-serve operations and addressing labor challenges. Our angle emphasizes automation technology, workforce solutions, and fundraising momentum in the robotics space.",
     "outletTypes": ["national-business-tech", "trade-specialist"],
     "geography": ["US", "Global"],
     "targetPublications": "Robotics and automation trade press",
-    "competitors": "Labor automation announcements",
+    "competitors": "Labor automation companies, restaurant tech funding announcements",
     "limit": 15
   }'
 ```
@@ -607,22 +626,34 @@ curl -X POST http://localhost:3001/api/reporters/match \
 - Outlets covering labor and workforce trends
 - Mix of US and global robotics press
 
+**Key Success Factors:**
+- Funding amount ($12M Seed) included in brief signals finance/VC reporters
+- Keywords: "automation," "labor challenges," "robotics" guide semantic search
+- Global geography allows for international robotics press inclusion
+
 ---
 
 ### Test Case C: Mortgage/Fintech + AWS Partnership
 
 **Scenario:** Fintech platform partnering with AWS for infrastructure
 
-**Request:**
+**How to Use in Chat Interface:**
+1. **Story Brief:** "We're partnering with AWS to power our mortgage platform, delivering infrastructure improvements in cost, latency, and compliance for the financial services industry. Our angle highlights cloud infrastructure wins, operational efficiency, and regulatory compliance technology."
+2. **Outlet Types:** Select `National Business/Tech` and `Trade/Specialist`
+3. **Geography:** Select `US`
+4. **Target Publications:** "Fintech outlets, cloud infrastructure press, AWS partnership coverage"
+5. **Competitors:** "Other fintech-AWS partnerships, mortgage tech infrastructure announcements"
+
+**API Request:**
 ```bash
 curl -X POST http://localhost:3001/api/reporters/match \
   -H "Content-Type: application/json" \
   -d '{
-    "storyBrief": "We are partnering with AWS to power our mortgage platform, delivering infrastructure improvements in cost, latency, and compliance for the financial services industry.",
+    "storyBrief": "We are partnering with AWS to power our mortgage platform, delivering infrastructure improvements in cost, latency, and compliance for the financial services industry. Our angle highlights cloud infrastructure wins, operational efficiency, and regulatory compliance technology.",
     "outletTypes": ["national-business-tech", "trade-specialist"],
     "geography": ["US"],
-    "targetPublications": "Fintech and cloud infrastructure outlets",
-    "competitors": "AWS partnership announcements in fintech",
+    "targetPublications": "Fintech outlets, cloud infrastructure press, AWS partnership coverage",
+    "competitors": "Other fintech-AWS partnerships, mortgage tech infrastructure announcements",
     "limit": 15
   }'
 ```
@@ -633,6 +664,11 @@ curl -X POST http://localhost:3001/api/reporters/match \
 - Business press covering strategic partnerships
 - Outlets focusing on financial services technology
 - Reporters covering compliance and regulatory tech
+
+**Key Success Factors:**
+- "AWS" and "partnership" keywords attract cloud infrastructure beat reporters
+- "Fintech," "mortgage," "compliance" terms guide toward financial services specialists
+- Business press interested in strategic partnership announcements
 
 ---
 
