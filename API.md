@@ -435,17 +435,20 @@ Fetch and store articles from The Guardian API.
 **Request Body:**
 ```json
 {
-  "pageSize": 50,
+  "pageSize": 100,
+  "pages": 1,
+  "fromPage": 1,
+  "daysBack": 90,
   "query": "technology"
 }
 ```
 
 **Parameters:**
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `pageSize` | number | No | Number of articles to fetch (default: 100, max: 200) |
-| `query` | string | No | Search query for articles |
+- `pageSize` (number, optional): Number of articles per page (default: 100, max: 200)
+- `pages` (number, optional): Number of pages to fetch (default: 1)
+- `fromPage` (number, optional): Starting page number (default: 1)
+- `daysBack` (number, optional): How many days back to fetch articles (default: 90)
+- `query` (string, optional): Search query to filter articles (default: general tech/business articles)
 
 **Response:**
 ```json
@@ -458,9 +461,20 @@ Fetch and store articles from The Guardian API.
 
 **Example:**
 ```bash
+# Basic ingest (100 articles from last 90 days)
 curl -X POST http://localhost:3001/api/articles/ingest \
   -H "Content-Type: application/json" \
-  -d '{"pageSize": 50}'
+  -d '{"pageSize": 100}'
+
+# Ingest multiple pages
+curl -X POST http://localhost:3001/api/articles/ingest \
+  -H "Content-Type: application/json" \
+  -d '{"pageSize": 50, "pages": 3, "fromPage": 1}'
+
+# Ingest articles from last 30 days with query filter
+curl -X POST http://localhost:3001/api/articles/ingest \
+  -H "Content-Type: application/json" \
+  -d '{"pageSize": 100, "daysBack": 30, "query": "artificial intelligence"}'
 ```
 
 ---
