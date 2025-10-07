@@ -530,7 +530,7 @@ curl -X POST http://localhost:3001/api/articles/init
 ```bash
 curl -X POST http://localhost:3001/api/articles/ingest \
   -H "Content-Type: application/json" \
-  -d '{"pageSize": 50}'
+  -d '{"pageSize": 100}'
 ```
 
 3. **Check statistics**:
@@ -538,26 +538,101 @@ curl -X POST http://localhost:3001/api/articles/ingest \
 curl http://localhost:3001/api/articles/stats
 ```
 
-4. **Search for reporters**:
-```bash
-curl -X POST http://localhost:3001/api/reporters/match \
-  -H "Content-Type: application/json" \
-  -d '{
-    "storyBrief": "Battery startup using silicon for EVs",
-    "outletTypes": ["national-business-tech"],
-    "geography": ["US"]
-  }'
-```
+4. **Search for reporters** - see test cases below
 
 5. **Get justifications** (optional, frontend does this automatically):
 ```bash
 curl -X POST http://localhost:3001/api/reporters/justifications \
   -H "Content-Type: application/json" \
   -d '{
-    "storyBrief": "Battery startup using silicon for EVs",
+    "storyBrief": "Your story brief...",
     "reporters": [...]
   }'
 ```
+
+---
+
+## Test Cases
+
+These test cases demonstrate the system's ability to match reporters across different story types and industries.
+
+### Test Case A: Battery Startup - Materials Innovation
+
+**Scenario:** Battery startup using domestically-sourced metallurgical silicon
+
+**Request:**
+```bash
+curl -X POST http://localhost:3001/api/reporters/match \
+  -H "Content-Type: application/json" \
+  -d '{
+    "storyBrief": "We are a battery startup using domestically-sourced metallurgical silicon for breakthrough materials in EVs. Looking for coverage on our materials innovation, climate impact, and US supply chain advantage.",
+    "outletTypes": ["national-business-tech", "trade-specialist"],
+    "geography": ["US"],
+    "targetPublications": "Climate tech and EV-focused outlets",
+    "competitors": "Traditional lithium battery manufacturers",
+    "limit": 15
+  }'
+```
+
+**Expected Results:**
+- Reporters covering climate tech, EVs, and materials science
+- National business/tech outlets (TechCrunch, WSJ, etc.)
+- Trade publications covering battery technology
+- US-focused coverage
+
+---
+
+### Test Case B: Restaurant Robotics - $12M Seed Round
+
+**Scenario:** Restaurant robotics platform announcing funding
+
+**Request:**
+```bash
+curl -X POST http://localhost:3001/api/reporters/match \
+  -H "Content-Type: application/json" \
+  -d '{
+    "storyBrief": "Announcing our $12M Seed round for our restaurant robotics platform that is automating quick-serve operations and addressing labor challenges in the food service industry.",
+    "outletTypes": ["national-business-tech", "trade-specialist"],
+    "geography": ["US", "Global"],
+    "targetPublications": "Robotics and automation trade press",
+    "competitors": "Labor automation announcements",
+    "limit": 15
+  }'
+```
+
+**Expected Results:**
+- Reporters covering robotics and automation
+- Business/tech reporters focusing on funding rounds
+- Trade publications covering restaurant technology
+- Outlets covering labor and workforce trends
+- Mix of US and global robotics press
+
+---
+
+### Test Case C: Mortgage/Fintech + AWS Partnership
+
+**Scenario:** Fintech platform partnering with AWS for infrastructure
+
+**Request:**
+```bash
+curl -X POST http://localhost:3001/api/reporters/match \
+  -H "Content-Type: application/json" \
+  -d '{
+    "storyBrief": "We are partnering with AWS to power our mortgage platform, delivering infrastructure improvements in cost, latency, and compliance for the financial services industry.",
+    "outletTypes": ["national-business-tech", "trade-specialist"],
+    "geography": ["US"],
+    "targetPublications": "Fintech and cloud infrastructure outlets",
+    "competitors": "AWS partnership announcements in fintech",
+    "limit": 15
+  }'
+```
+
+**Expected Results:**
+- Fintech reporters covering infrastructure and technology
+- Cloud/AWS beat reporters
+- Business press covering strategic partnerships
+- Outlets focusing on financial services technology
+- Reporters covering compliance and regulatory tech
 
 ---
 

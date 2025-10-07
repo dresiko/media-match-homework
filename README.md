@@ -119,22 +119,48 @@ make ingest
 
 ## 🧪 Test Briefs
 
-Try these sample briefs:
+Try these sample briefs from the project requirements:
 
-**A. Battery Startup**
-```
-We're a battery startup using domestically-sourced metallurgical silicon for breakthrough materials in EVs. Looking for coverage on our materials innovation and US supply chain advantage.
-```
+### A. Battery Startup - Materials Innovation
 
-**B. Restaurant Robotics**
+**Story Brief:**
 ```
-Announcing our $12M Seed round for our restaurant robotics platform that's automating quick-serve operations and addressing labor challenges.
+We're a battery startup using domestically-sourced metallurgical silicon for breakthrough materials in EVs. Looking for coverage on our materials innovation, climate impact, and US supply chain advantage.
 ```
 
-**C. Mortgage/Fintech + AWS**
+**Suggested Filters:**
+- **Angle:** Materials breakthrough, climate/EV, US supply chain
+- **Outlet Types:** National tech/business + climate trades
+- **Geography:** US
+
+---
+
+### B. Restaurant Robotics - $12M Seed Round
+
+**Story Brief:**
 ```
-We're partnering with AWS to power our mortgage platform, delivering infrastructure improvements in cost, latency, and compliance.
+Announcing our $12M Seed round for our restaurant robotics platform that's automating quick-serve operations and addressing labor challenges in the food service industry.
 ```
+
+**Suggested Filters:**
+- **Angle:** Automation, labor, quick-serve operations, fundraising
+- **Outlet Types:** National tech + robotics trades (avoid hype-only outlets)
+- **Geography:** US, with openness to global robotics press
+
+---
+
+### C. Mortgage/Fintech + AWS Partnership
+
+**Story Brief:**
+```
+We're partnering with AWS to power our mortgage platform, delivering infrastructure improvements in cost, latency, and compliance for the financial services industry.
+```
+
+**Suggested Filters:**
+- **Angle:** Infrastructure, cost/latency wins, compliance
+- **Outlet Types:** Fintech + cloud infrastructure reporters, business press
+- **Geography:** US
+- **Target Publications:** AWS partnership announcement angles
 
 ## 🛠️ Development Commands
 
