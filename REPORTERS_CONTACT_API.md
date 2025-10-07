@@ -76,7 +76,7 @@ GET /api/reporters/all
     },
     // ... more reporters
   ],
-  "count": 29
+  "count": 50
 }
 ```
 
@@ -138,7 +138,7 @@ The API includes mock contact data for reporters from the three challenge briefs
 ### Brief 3: Materials/EV/Climate
 - Dharna Noor, Jonathan Watts, Gina McCarthy, Lisa O'Carroll, Jessica Elgot, Oliver Milman, Rebecca Solnit, Rob Davies, Graeme Wearden, Tobi Thomas
 
-**Total: 38 unique reporters**
+**Total: 50 unique reporters** (updated to cover all three test case scenarios)
 
 ## Error Handling
 

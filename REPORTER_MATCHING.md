@@ -141,29 +141,37 @@ From the similar articles, we:
 
 ## 🧮 Ranking Formula
 
-Reporters are ranked by **average similarity score** across their articles:
+**Current Implementation:** Additive scoring that balances quality with consistency.
 
-```
-Average Similarity = Sum of article similarities / Number of articles
+```javascript
+// Base score from best matching article
+baseScore = (1 - bestArticle.distance) * 100
+
+// Bonus from additional relevant articles (10% each)
+for (article in additionalArticles[1,2]) {
+  articleScore = (1 - article.distance) * 100
+  bonus += articleScore * 0.10
+}
+
+// Final score (capped at 100)
+matchScore = Math.min(baseScore + bonus, 100)
 ```
 
-**Why average instead of max?**
-- Rewards consistent coverage of related topics
-- Avoids one-hit wonders
-- Identifies beat reporters vs. general assignment
+**Why this approach?**
+- **Quality first**: Best article determines the base (proven coverage ability)
+- **Consistency bonus**: Additional relevant articles add score * score / 1000
+- **Diminishing returns**: Only top 3 articles counted
+- **Simple & explainable**: Easy to understand and tune
 
 **Example:**
 
 Reporter A:
-- Article 1: 0.95 similarity
-- Article 2: 0.90 similarity
-- **Average: 0.925** ⭐
+- Article 1: 0.46 distance → 54% score (base)
+- Article 2: 0.59 distance → 41% score → +1.7% bonus
+- Article 3: 0.61 distance → 39% score → +1.5% bonus
+- **Final: 54 + 1.7 + 1.5 = 57%** ⭐
 
-Reporter B:
-- Article 1: 0.98 similarity
-- **Average: 0.98** ⭐⭐
-
-Reporter B ranks higher despite fewer articles because they wrote THE most relevant piece.
+**See [DESIGN_NOTE.md](./DESIGN_NOTE.md)** for detailed scoring algorithm and future improvements including recency weighting and outlet tier bonuses.
 
 ## 🔍 Key Components
 
